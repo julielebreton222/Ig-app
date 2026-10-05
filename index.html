@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pixel Español</title>
+<meta name="description" content="A few minutes of movie dialogue a day, in Spanish and English.">
+<meta name="theme-color" content="#5fb3d9">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pixel ES">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #3b2416;
+    --ink-soft: #7a5a40;
+    --cream: #fff4d6;
+    --cream-2: #f6e3b4;
+    --sky-1: #5fb3d9;
+    --sky-2: #7ec8e3;
+    --sky-3: #a8dcec;
+    --green: #3f8f4a;
+    --green-2: #2f6e39;
+    --yellow: #f2c230;
+    --orange: #f28c28;
+    --red: #d6402f;
+    --white: #ffffff;
+    --pix: "Press Start 2P", ui-monospace, "Courier New", monospace;
+    --body: "VT323", ui-monospace, "Courier New", monospace;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 22px;
+    line-height: 1.15;
+    background-color: var(--sky-2);
+    background-image: linear-gradient(180deg,
+      var(--sky-1) 0 20%, #6dbde0 20% 40%, var(--sky-2) 40% 60%, #93d2e8 60% 80%, var(--sky-3) 80% 100%);
+    background-attachment: fixed;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  canvas { image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+  .hidden { display: none !important; }
+
+  /* ---------- 8-bit building blocks ---------- */
+  .box {
+    background: var(--cream);
+    border: 4px solid var(--ink);
+    box-shadow: inset -4px -4px 0 var(--cream-2), 6px 6px 0 rgba(59, 36, 22, .35);
+    padding: 14px;
+    margin: 0 0 18px;
+  }
+  .btn {
+    font-family: var(--pix);
+    font-size: 11px;
+    line-height: 1.4;
+    padding: 12px 14px;
+    background: var(--yellow);
+    border: 4px solid var(--ink);
+    box-shadow: inset -4px -4px 0 rgba(0, 0, 0, .18), 4px 4px 0 var(--ink);
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .btn:active { transform: translate(4px, 4px); box-shadow: inset -4px -4px 0 rgba(0, 0, 0, .18); }
+  .btn.green { background: #6cc46f; }
+  .btn.red { background: #f07a62; }
+  .btn.white { background: var(--white); }
+  .btn.on { background: var(--orange); }
+  .btn.small { font-size: 9px; padding: 8px 10px; }
+  .btn.big { font-size: 15px; padding: 16px 22px; width: 100%; }
+  .h { font-family: var(--pix); font-size: 13px; line-height: 1.5; margin: 0 0 10px; text-transform: uppercase; }
+  .sub { font-size: 18px; color: var(--ink-soft); margin: 0 0 10px; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+  /* ---------- Title screen ---------- */
+  #title {
+    position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 18px; padding: 16px;
+    background: #1d1430;
+    transition: opacity .4s steps(4);
+  }
+  #title.fade { opacity: 0; pointer-events: none; }
+  .logo {
+    font-family: var(--pix);
+    font-size: clamp(18px, 6.4vw, 30px);
+    line-height: 1.3;
+    text-align: center;
+    margin: 0;
+    color: var(--yellow);
+    text-shadow: 3px 3px 0 var(--red), 6px 6px 0 #000;
+  }
+  .stage { position: relative; width: min(92vw, 432px); }
+  .stage canvas { width: 100%; height: auto; border: 4px solid #000; box-shadow: 0 0 0 4px var(--cream); }
+  .bubble {
+    position: absolute; left: 50%; top: 4%;
+    transform: translateX(-12%);
+    font-family: var(--pix);
+    font-size: clamp(10px, 3.2vw, 14px);
+    background: var(--white);
+    border: 4px solid var(--ink);
+    padding: 10px 12px;
+    white-space: nowrap;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, .35);
+  }
+  .bubble::after {
+    content: ""; position: absolute; left: 14px; bottom: -14px;
+    width: 12px; height: 10px; background: var(--white);
+    border-left: 4px solid var(--ink); border-bottom: 4px solid var(--ink);
+    transform: skewX(30deg);
+  }
+  .press {
+    font-family: var(--pix); font-size: 14px;
+    color: var(--white); background: none; border: 0; padding: 14px; cursor: pointer;
+    animation: blink 1s steps(2) infinite;
+  }
+  .press small { display: block; font-size: 9px; color: #b9a8d9; margin-top: 10px; }
+  @keyframes blink { 50% { opacity: .25; } }
+
+  /* ---------- App shell ---------- */
+  header {
+    max-width: 720px; margin: 0 auto; padding: 16px 16px 8px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  #mini { width: 54px; height: 78px; cursor: pointer; flex: none; }
+  header .logo { font-size: clamp(14px, 4.6vw, 20px); text-align: left; flex: 1; text-shadow: 2px 2px 0 var(--red), 4px 4px 0 var(--ink); }
+  .streak {
+    font-family: var(--pix); font-size: 10px; line-height: 1.5; text-align: center;
+    background: var(--cream); border: 4px solid var(--ink); padding: 6px 8px; flex: none;
+  }
+  .streak b { display: block; font-size: 16px; color: var(--red); }
+  nav { max-width: 720px; margin: 0 auto; padding: 4px 16px 12px; display: flex; gap: 8px; }
+  nav .btn { flex: 1; font-size: 10px; padding: 10px 6px; background: var(--cream); }
+  nav .btn.active { background: var(--yellow); }
+  main { max-width: 720px; margin: 0 auto; padding: 0 16px 60px; }
+  section { display: none; }
+  section.active { display: block; }
+
+  /* ---------- Lesson ---------- */
+  .day-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .progress { height: 16px; border: 4px solid var(--ink); background: var(--white); margin: 6px 0 12px; }
+  .progress i { display: block; height: 100%; background: repeating-linear-gradient(90deg, var(--green) 0 8px, #6cc46f 8px 16px); }
+  .scene-title { font-family: var(--pix); font-size: 10px; line-height: 1.5; color: var(--ink-soft); margin: 16px 0 8px; text-transform: uppercase; }
+  .line { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; padding: 10px 0; border-top: 4px dotted var(--cream-2); }
+  .line:first-of-type { border-top: 0; }
+  .line.playing { background: #fff0a8; }
+  .who { font-family: var(--pix); font-size: 9px; color: var(--red); grid-column: 1 / -1; text-transform: uppercase; }
+  .es { font-size: 27px; color: var(--ink); }
+  .en { font-size: 21px; color: var(--ink-soft); grid-column: 1; }
+  .en.covered { color: transparent; background: repeating-linear-gradient(45deg, var(--cream-2) 0 6px, #ead1a0 6px 12px); cursor: pointer; user-select: none; }
+  .tools { display: flex; gap: 6px; grid-row: 2 / 4; grid-column: 2; align-self: start; }
+  .tools .btn { font-size: 12px; padding: 8px 9px; }
+  .done-card { text-align: center; }
+  .done-card p { margin: 8px 0 14px; }
+  .empty { text-align: center; color: var(--ink-soft); }
+
+  /* ---------- Settings ---------- */
+  textarea, select, input[type=file] {
+    width: 100%; background: var(--white); border: 4px solid var(--ink); padding: 8px; font-size: 18px;
+  }
+  textarea { min-height: 130px; resize: vertical; }
+  code { background: var(--cream-2); padding: 0 4px; }
+  pre { background: var(--white); border: 4px solid var(--ink); padding: 8px; font-size: 18px; overflow-x: auto; margin: 8px 0; }
+  .note { font-size: 18px; color: var(--ink-soft); }
+  .toast {
+    position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 20;
+    font-family: var(--pix); font-size: 10px; line-height: 1.5;
+    background: var(--ink); color: var(--cream); padding: 10px 14px; border: 4px solid var(--cream);
+    max-width: calc(100vw - 32px);
+  }
+</style>
+</head>
+<body>
+
+<!-- Title screen: the dance and the welcome -->
+<div id="title">
+  <h1 class="logo">PIXEL<br>ESPAÑOL</h1>
+  <div class="stage">
+    <canvas id="scene" width="72" height="56" aria-label="Beto dancing on a farm"></canvas>
+    <div class="bubble hidden" id="bubble">¡BIENVENIDO!</div>
+  </div>
+  <button class="press" id="start">▶ PULSA START<small>tap to start</small></button>
+</div>
+
+<header>
+  <canvas id="mini" width="18" height="26" title="Tap Beto" aria-label="Beto. Tap him to make him dance."></canvas>
+  <h1 class="logo">PIXEL<br>ESPAÑOL</h1>
+  <div class="streak">RACHA<b id="streak">0</b></div>
+</header>
+
+<nav>
+  <button class="btn active" data-tab="today">Hoy</button>
+  <button class="btn" data-tab="saved">Guardado</button>
+  <button class="btn" data-tab="settings">Ajustes</button>
+</nav>
+
+<main>
+  <section id="today" class="active"></section>
+
+  <section id="saved"></section>
+
+  <section id="settings">
+    <div class="box">
+      <h2 class="h">Importar guion</h2>
+      <p class="sub">Import your script. It stays on this phone only.</p>
+      <p class="note">A spreadsheet saved as CSV, one line of dialogue per row:</p>
+      <pre>Speaker,English,Spanish
+BETO,Good morning.,Buenos días.
+# The bus stop
+LALO,Hi.,Hola.</pre>
+      <p class="note">A row starting with <code>#</code> is a scene title. Speaker is optional (just English,Spanish works too). Tabs or semicolons also work.</p>
+      <div class="row" style="margin:10px 0">
+        <input type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain">
+      </div>
+      <textarea id="paste" placeholder="…or paste the rows here"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn green" id="import">Importar</button>
+        <span class="note" id="import-info"></span>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2 class="h">Por día</h2>
+      <p class="sub">Lines per day. About 30 lines ≈ 2–3 minutes of a movie.</p>
+      <select id="perday">
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+        <option value="40">40</option>
+        <option value="50">50</option>
+      </select>
+    </div>
+
+    <div class="box">
+      <h2 class="h">Sonido</h2>
+      <div class="row">
+        <button class="btn small" id="sound">Música: sí</button>
+        <button class="btn small" id="slow">Voz lenta: no</button>
+        <button class="btn small white" id="test-voice">Probar voz</button>
+      </div>
+      <p class="note" id="voice-info"></p>
+    </div>
+
+    <div class="box">
+      <h2 class="h">Copia de seguridad</h2>
+      <p class="sub">Backup: keeps the script, progress and saved lines. Use it to move to a new phone.</p>
+      <div class="row">
+        <button class="btn white small" id="export">Exportar</button>
+        <label class="btn white small">Restaurar<input type="file" id="restore" accept=".json,application/json" hidden></label>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2 class="h">Reiniciar</h2>
+      <div class="row">
+        <button class="btn white small" id="restart">Volver al día 1</button>
+        <button class="btn red small" id="demo">Cargar demo</button>
+      </div>
+      <p class="note">Content: <span id="source"></span></p>
+    </div>
+  </section>
+</main>
+
+<div class="toast hidden" id="toast"></div>
+
+<script>
+/* ================= Beto, the pixel dancer ================= */
+const PAL = {
+  O: "#2a1a10", K: "#3a2414", S: "#eab387", s: "#c98b5e", W: "#ffffff", E: "#1a1a1a",
+  M: "#8a2a2a", G: "#3f8f4a", g: "#2f6e39", Y: "#f2c230", P: "#5a3d2b", R: "#d6402f",
+};
+const HEAD = [
+  "....KKKKKKKK....",
+  "...KKKKKKKKKK...",
+  "...KKKKKKKKKK...",
+  "...SSSSSSSSSS...",
+  "...SWWSSSSWWS...",
+  "...SWESSSSWES...",
+  "..sSSSSssSSSSs..",
+  "...SSMWWWWMSS...",
+  "...SSSMMMMSSS...",
+  "....SSSSSSSS....",
+  "......SSSS......",
+];
+const HEAD_BLINK = HEAD.map((r, i) => i === 4 ? "...SKKSSSSKKS..." : i === 5 ? "...SSSSSSSSSS..." : r);
+const TORSO = [
+  "....GGGGGGGG....",
+  "....GGGGGGGG....",
+  "....YYYYYYYY....",
+  "....GGGGGGGG....",
+  "....GGGGGGGG....",
+  "....GGGGGGGG....",
+  "....PPPPPPPP....",
+];
+const LEGS_TOG = [
+  ".....PP..PP.....",
+  ".....PP..PP.....",
+  ".....PP..PP.....",
+  ".....PP..PP.....",
+  "....RRR..RRR....",
+  "....RRR..RRR....",
+];
+const LEGS_APART = [
+  "....PP....PP....",
+  "....PP....PP....",
+  "...PP......PP...",
+  "...PP......PP...",
+  "..RRR......RRR..",
+  "..RRR......RRR..",
+];
+const LEGS_KICK_R = [
+  ".....PP..PP.....",
+  ".....PP...PP....",
+  ".....PP....PP...",
+  ".....PP.....PRR.",
+  "....RRR.........",
+  "....RRR.........",
+];
+const mirror = (rows) => rows.map((r) => [...r].reverse().join(""));
+const LEGS_KICK_L = mirror(LEGS_KICK_R);
+// Arm pixels for the left side as [x, y, color]; the right side is mirrored.
+const ARMS = {
+  down: [[3, 11, "g"], [3, 12, "g"], [3, 13, "g"], [3, 14, "g"], [3, 15, "g"], [3, 16, "S"]],
+  up: [[3, 11, "g"], [2, 10, "g"], [1, 9, "g"], [1, 8, "g"], [1, 7, "g"], [1, 6, "g"], [1, 5, "S"]],
+  out: [[3, 11, "g"], [2, 11, "g"], [1, 10, "g"], [0, 9, "S"]],
+};
+
+function makeFrame(left, right, legs, blink) {
+  const g = Array.from({ length: 24 }, () => Array(16).fill("."));
+  const stamp = (rows, y0) => rows.forEach((r, i) => [...r].forEach((c, x) => { if (c !== ".") g[y0 + i][x] = c; }));
+  stamp(blink ? HEAD_BLINK : HEAD, 0);
+  stamp(TORSO, 11);
+  stamp(legs, 18);
+  ARMS[left].forEach(([x, y, c]) => { g[y][x] = c; });
+  ARMS[right].forEach(([x, y, c]) => { g[y][15 - x] = c; });
+  // Add a 1px dark outline around the whole sprite (18 x 26).
+  const o = Array.from({ length: 26 }, () => Array(18).fill("."));
+  g.forEach((row, y) => row.forEach((c, x) => { if (c !== ".") o[y + 1][x + 1] = c; }));
+  const edge = [];
+  o.forEach((row, y) => row.forEach((c, x) => {
+    if (c !== ".") return;
+    const near = [[0, 1], [0, -1], [1, 0], [-1, 0]].some(([dx, dy]) => (o[y + dy] || [])[x + dx] && o[y + dy][x + dx] !== ".");
+    if (near) edge.push([x, y]);
+  }));
+  edge.forEach(([x, y]) => { o[y][x] = "O"; });
+  return o;
+}
+
+const FRAMES = {
+  idle: makeFrame("down", "down", LEGS_TOG),
+  blink: makeFrame("down", "down", LEGS_TOG, true),
+  a: makeFrame("up", "down", LEGS_KICK_R),
+  b: makeFrame("down", "up", LEGS_KICK_L),
+  c: makeFrame("out", "out", LEGS_APART),
+  d: makeFrame("up", "up", LEGS_TOG),
+};
+// [frame, hop] — his signature move: kick, kick, disco arms, jump.
+const DANCE = [
+  ["a", 0], ["idle", 0], ["b", 0], ["idle", 0], ["a", 0], ["b", 0],
+  ["c", 1], ["c", 0], ["c", 1], ["d", -3], ["d", -1], ["idle", 0],
+];
+const STEP_MS = 170;
+
+function drawSprite(ctx, frame, x, y) {
+  frame.forEach((row, j) => row.forEach((c, i) => {
+    if (c === ".") return;
+    ctx.fillStyle = PAL[c];
+    ctx.fillRect(x + i, y + j, 1, 1);
+  }));
+}
+
+// Runs one canvas: idles and blinks, and dances on request.
+function animator(draw) {
+  let start = 0, until = 0;
+  function tick(now) {
+    let name = "idle", hop = 0;
+    if (now < until) {
+      [name, hop] = DANCE[Math.max(0, Math.floor((now - start) / STEP_MS)) % DANCE.length];
+    } else if (Math.floor(now / 100) % 40 === 0) {
+      name = "blink";
+    }
+    draw(FRAMES[name], hop, now);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  return { dance(ms = 3000) { start = performance.now(); until = start + ms; } };
+}
+
+/* ---------- The farm scene on the title screen ---------- */
+function buildScene() {
+  const W = 72, H = 56;
+  const mk = () => { const c = document.createElement("canvas"); c.width = W; c.height = H; return c; };
+  const back = mk(), front = mk();
+  const b = back.getContext("2d"), f = front.getContext("2d");
+  const px = (ctx, x, y, col, w = 1, h = 1) => { ctx.fillStyle = col; ctx.fillRect(x, y, w, h); };
+
+  ["#5fb3d9", "#6dbde0", "#7ec8e3", "#93d2e8", "#a8dcec", "#bfe6f0"].forEach((col, i) => px(b, 0, i * 7, col, W, 7));
+  px(b, 0, 42, "#bfe6f0", W, H - 42);
+  for (let dy = -5; dy <= 5; dy++) for (let dx = -5; dx <= 5; dx++) {
+    if (dx * dx + dy * dy <= 29) px(b, 60 + dx, 9 + dy, dx * dx + dy * dy > 18 ? "#f28c28" : "#f2c230");
+  }
+
+  for (let x = 0; x < W; x++) {
+    const top = 34 + Math.round(3 * Math.sin(x / 7) + 2 * Math.sin(x / 3.1));
+    px(f, x, top, "#2f6e39", 1, 44 - top);
+  }
+  // Barn
+  for (let i = 0; i < 6; i++) px(f, 9 - i, 25 + i, "#7a2a1e", 2 + i * 2, 1);
+  px(f, 4, 31, "#d6402f", 12, 11);
+  px(f, 8, 34, "#fff4d6", 4, 8);
+  for (let i = 0; i < 4; i++) { px(f, 8 + i, 34 + i * 2, "#d6402f", 1, 2); px(f, 11 - i, 34 + i * 2, "#d6402f", 1, 2); }
+  // Ground with a little dither
+  for (let y = 42; y < H; y++) for (let x = 0; x < W; x++) {
+    px(f, x, y, (x * 3 + y * 5) % 11 === 0 ? "#2f6e39" : "#3f8f4a");
+  }
+  // Fence
+  px(f, 0, 39, "#b07a48", W, 1);
+  px(f, 0, 42, "#b07a48", W, 1);
+  for (let x = 2; x < W; x += 9) px(f, x, 37, "#8a5a35", 2, 8);
+
+  const cloud = ["..WWW...", ".WWWWWW.", "WWWWWWWW"];
+  return function draw(ctx, frame, hop, now) {
+    ctx.drawImage(back, 0, 0);
+    [[0, 6, 380], [40, 15, 560], [70, 3, 470]].forEach(([x0, y, speed]) => {
+      const x = Math.floor(((x0 + now / speed) % 90) - 10);
+      cloud.forEach((r, j) => [...r].forEach((c, i) => { if (c === "W") px(ctx, x + i, y + j, "#ffffff"); }));
+    });
+    ctx.drawImage(front, 0, 0);
+    px(ctx, 29, 51, "rgba(20, 50, 25, .45)", 14, 2);
+    drawSprite(ctx, frame, 27, 26 + hop);
+  };
+}
+
+/* ================= Sound: chiptune + voice ================= */
+let audio;
+function jingle() {
+  if (!state.sound) return;
+  try {
+    audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [[523, 0], [659, .12], [784, .24], [1047, .36], [784, .52], [1047, .64]];
+    notes.forEach(([hz, t]) => {
+      const o = audio.createOscillator(), g = audio.createGain();
+      o.type = "square";
+      o.frequency.value = hz;
+      g.gain.setValueAtTime(.07, audio.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(.001, audio.currentTime + t + .14);
+      o.connect(g).connect(audio.destination);
+      o.start(audio.currentTime + t);
+      o.stop(audio.currentTime + t + .15);
+    });
+  } catch (e) { /* no audio on this device */ }
+}
+
+let voices = [];
+function loadVoices() {
+  if ("speechSynthesis" in window) voices = speechSynthesis.getVoices();
+}
+function spanishVoice() {
+  const es = voices.filter((v) => v.lang.toLowerCase().replace("_", "-").startsWith("es"));
+  return es.find((v) => /es-(mx|us|419)/i.test(v.lang)) || es.find((v) => /es-es/i.test(v.lang)) || es[0] || null;
+}
+function say(text, onend) {
+  if (!("speechSynthesis" in window)) { if (onend) onend(); return; }
+  const u = new SpeechSynthesisUtterance(text);
+  const v = spanishVoice();
+  u.lang = v ? v.lang : "es-MX";
+  if (v) u.voice = v;
+  u.rate = state.slow ? .7 : .95;
+  if (onend) { u.onend = onend; u.onerror = onend; }
+  speechSynthesis.speak(u);
+}
+function hush() {
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+}
+
+/* ================= Content ================= */
+// Original demo scenes, so there's something to learn before importing.
+const DEMO = [
+  { scene: "La parada del autobús · The bus stop" },
+  { sp: "Beto", en: "Good morning.", es: "Buenos días." },
+  { sp: "Lalo", en: "Why are you wearing a cape?", es: "¿Por qué llevas una capa?" },
+  { sp: "Beto", en: "It's not a cape. It's a blanket with ambition.", es: "No es una capa. Es una manta con ambición." },
+  { sp: "Lalo", en: "The bus is late again.", es: "El autobús llega tarde otra vez." },
+  { sp: "Beto", en: "The bus is never late. We are just early.", es: "El autobús nunca llega tarde. Nosotros llegamos temprano." },
+  { sp: "Lalo", en: "It's eight thirty.", es: "Son las ocho y media." },
+  { sp: "Beto", en: "Then the bus is late.", es: "Entonces el autobús llega tarde." },
+  { sp: "Lalo", en: "Do you want half of my sandwich?", es: "¿Quieres la mitad de mi sándwich?" },
+  { sp: "Beto", en: "What kind?", es: "¿De qué es?" },
+  { sp: "Lalo", en: "Peanut butter and pickles.", es: "Mantequilla de maní y pepinillos." },
+  { sp: "Beto", en: "…Yes.", es: "…Sí." },
+  { scene: "La gallina · The chicken" },
+  { sp: "Abuela", en: "Beto, the chicken escaped again.", es: "Beto, la gallina se escapó otra vez." },
+  { sp: "Beto", en: "Which one?", es: "¿Cuál?" },
+  { sp: "Abuela", en: "The one that hates you.", es: "La que te odia." },
+  { sp: "Beto", en: "They all hate me.", es: "Todas me odian." },
+  { sp: "Abuela", en: "Bring her back before dinner.", es: "Tráela antes de la cena." },
+  { sp: "Beto", en: "What's for dinner?", es: "¿Qué hay de cena?" },
+  { sp: "Abuela", en: "Not chicken. Not yet.", es: "Pollo no. Todavía no." },
+  { sp: "Beto", en: "I'll get my bike.", es: "Voy por mi bicicleta." },
+  { sp: "Abuela", en: "Your bike has no seat.", es: "Tu bicicleta no tiene asiento." },
+  { sp: "Beto", en: "That's how I go faster.", es: "Así voy más rápido." },
+  { scene: "El baile · The dance" },
+  { sp: "Lalo", en: "Are you going to the school dance?", es: "¿Vas a ir al baile de la escuela?" },
+  { sp: "Beto", en: "I don't know how to dance.", es: "No sé bailar." },
+  { sp: "Lalo", en: "I saw you dancing this morning.", es: "Te vi bailando esta mañana." },
+  { sp: "Beto", en: "That was a stretching routine.", es: "Eso era una rutina de estiramiento." },
+  { sp: "Lalo", en: "With music?", es: "¿Con música?" },
+  { sp: "Beto", en: "Very intense stretching.", es: "Estiramiento muy intenso." },
+  { sp: "Lalo", en: "You should ask Marisol.", es: "Deberías invitar a Marisol." },
+  { sp: "Beto", en: "She doesn't know I exist.", es: "Ella no sabe que existo." },
+  { sp: "Lalo", en: "She asked me who the guy with the blanket is.", es: "Me preguntó quién es el chico de la manta." },
+  { sp: "Beto", en: "…I'm going to need a better blanket.", es: "…Voy a necesitar una manta mejor." },
+];
+
+/* ================= State (saved on this device only) ================= */
+const KEY = "pixel-espanol-v1";
+function fresh() {
+  return {
+    lines: DEMO, source: "demo", perDay: 10, pos: 0, lastDone: null, streak: 0,
+    saved: [], hideEn: false, slow: false, sound: true,
+  };
+}
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem(KEY));
+    if (s && Array.isArray(s.lines)) return Object.assign(fresh(), s);
+  } catch (e) { /* storage unavailable or corrupt */ }
+  return fresh();
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); }
+  catch (e) { toast("No se pudo guardar · Couldn't save on this device"); }
+}
+let state = load();
+let peek = false;
+
+const dateStr = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const today = () => dateStr(new Date());
+const yesterday = () => { const d = new Date(); d.setDate(d.getDate() - 1); return dateStr(d); };
+
+// Split the script into daily chunks, preferring to break at scene titles.
+function buildDays(lines, perDay) {
+  const hasScenes = lines.some((l) => l.scene);
+  const days = [];
+  let cur = null;
+  const open = (i) => { cur = { start: i, items: [], count: 0, title: null }; };
+  const close = () => { if (cur && cur.count) days.push(cur); cur = null; };
+  lines.forEach((l, i) => {
+    if (!cur) open(i);
+    if (l.scene) {
+      if (hasScenes && cur.count >= Math.ceil(perDay * 0.6)) { close(); open(i); }
+      if (!cur.title) cur.title = l.scene;
+      cur.items.push(l);
+      return;
+    }
+    cur.items.push(l);
+    cur.count++;
+    if (cur.count >= (hasScenes ? Math.ceil(perDay * 1.25) : perDay)) close();
+  });
+  close();
+  return days;
+}
+function currentDay(days) {
+  let idx = 0;
+  days.forEach((d, i) => { if (d.start <= state.pos) idx = i; });
+  return state.pos >= state.lines.length ? days.length : idx;
+}
+
+/* ================= Rendering ================= */
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+function renderToday() {
+  const el = $("#today");
+  const days = buildDays(state.lines, state.perDay);
+  const n = currentDay(days);
+  $("#streak").textContent = state.streak;
+
+  if (!days.length) {
+    el.innerHTML = `<div class="box empty"><p class="h">Sin guion</p><p>No script yet. Import one in Ajustes.</p></div>`;
+    return;
+  }
+  if (n >= days.length) {
+    el.innerHTML = `<div class="box done-card">
+      <p class="h">¡Fin!</p><p>You finished the whole script. ${days.length} days. ¡Increíble!</p>
+      <button class="btn green" id="again">Empezar otra vez</button></div>`;
+    $("#again").onclick = () => { state.pos = 0; save(); renderToday(); };
+    return;
+  }
+  if (state.lastDone === today() && !peek) {
+    el.innerHTML = `<div class="box done-card">
+      <p class="h">¡Listo por hoy!</p>
+      <p>Done for today. Racha: <b>${state.streak}</b> ${state.streak === 1 ? "día" : "días"}.<br>Mañana: día ${n + 1} de ${days.length}.</p>
+      <button class="btn white small" id="more">Una más (opcional)</button></div>`;
+    $("#more").onclick = () => { peek = true; renderToday(); };
+    return;
+  }
+
+  const day = days[n];
+  let html = `<div class="box">
+    <div class="day-head"><p class="h">Día ${n + 1} / ${days.length}</p></div>
+    <div class="progress"><i style="width:${Math.round((n / days.length) * 100)}%"></i></div>
+    <div class="row">
+      <button class="btn small ${state.hideEn ? "on" : ""}" id="hide">${state.hideEn ? "Inglés: oculto" : "Inglés: visible"}</button>
+      <button class="btn small ${state.slow ? "on" : ""}" id="slow-t">${state.slow ? "Lento" : "Normal"}</button>
+      <button class="btn small green" id="play-all">▶ Todo</button>
+    </div>`;
+  let i = 0;
+  day.items.forEach((l) => {
+    if (l.scene) { html += `<p class="scene-title">${esc(l.scene)}</p>`; return; }
+    const saved = state.saved.some((s) => s.es === l.es && s.en === l.en);
+    html += `<div class="line" data-i="${i}">
+      ${l.sp ? `<div class="who">${esc(l.sp)}</div>` : ""}
+      <div class="es">${esc(l.es)}</div>
+      <div class="tools">
+        <button class="btn white" data-say="${i}" aria-label="Escuchar · Listen">♪</button>
+        <button class="btn ${saved ? "on" : "white"}" data-save="${i}" aria-label="Guardar · Save">★</button>
+      </div>
+      <div class="en ${state.hideEn ? "covered" : ""}" data-reveal>${esc(l.en)}</div>
+    </div>`;
+    i++;
+  });
+  html += `</div><button class="btn big green" id="done">¡Hecho! ✓</button>`;
+  el.innerHTML = html;
+
+  const lines = day.items.filter((l) => !l.scene);
+  $("#hide").onclick = () => { state.hideEn = !state.hideEn; save(); renderToday(); };
+  $("#slow-t").onclick = () => { state.slow = !state.slow; save(); renderToday(); renderSettings(); };
+  el.querySelectorAll("[data-reveal]").forEach((n) => { n.onclick = () => n.classList.remove("covered"); });
+  el.querySelectorAll("[data-say]").forEach((b) => { b.onclick = () => { hush(); say(lines[+b.dataset.say].es); }; });
+  el.querySelectorAll("[data-save]").forEach((b) => {
+    b.onclick = () => {
+      const l = lines[+b.dataset.save];
+      const at = state.saved.findIndex((s) => s.es === l.es && s.en === l.en);
+      if (at >= 0) state.saved.splice(at, 1); else state.saved.unshift({ sp: l.sp, en: l.en, es: l.es });
+      save();
+      b.classList.toggle("on", at < 0);
+      b.classList.toggle("white", at >= 0);
+    };
+  });
+
+  let playing = false;
+  $("#play-all").onclick = () => {
+    hush();
+    if (playing) { playing = false; el.querySelectorAll(".line").forEach((x) => x.classList.remove("playing")); return; }
+    playing = true;
+    const rows = [...el.querySelectorAll(".line")];
+    const next = (k) => {
+      rows.forEach((x) => x.classList.remove("playing"));
+      if (!playing || k >= lines.length) { playing = false; return; }
+      rows[k].classList.add("playing");
+      rows[k].scrollIntoView({ block: "nearest", behavior: "smooth" });
+      say(lines[k].es, () => setTimeout(() => next(k + 1), 350));
+    };
+    next(0);
+  };
+
+  $("#done").onclick = () => {
+    hush();
+    if (state.lastDone !== today()) {
+      state.streak = state.lastDone === yesterday() ? state.streak + 1 : 1;
+      state.lastDone = today();
+    }
+    const following = days[n + 1];
+    state.pos = following ? following.start : state.lines.length;
+    peek = false;
+    save();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    miniBeto.dance(2600);
+    jingle();
+    say("¡Muy bien!");
+    renderToday();
+  };
+}
+
+function renderSaved() {
+  const el = $("#saved");
+  if (!state.saved.length) {
+    el.innerHTML = `<div class="box empty"><p class="h">Nada guardado</p><p>Tap ★ on a line to save it here.</p></div>`;
+    return;
+  }
+  el.innerHTML = `<div class="box"><p class="h">Guardado · ${state.saved.length}</p>` + state.saved.map((l, i) => `
+    <div class="line">
+      ${l.sp ? `<div class="who">${esc(l.sp)}</div>` : ""}
+      <div class="es">${esc(l.es)}</div>
+      <div class="tools">
+        <button class="btn white" data-say="${i}" aria-label="Escuchar · Listen">♪</button>
+        <button class="btn red" data-del="${i}" aria-label="Quitar · Remove">✕</button>
+      </div>
+      <div class="en">${esc(l.en)}</div>
+    </div>`).join("") + `</div>`;
+  el.querySelectorAll("[data-say]").forEach((b) => { b.onclick = () => { hush(); say(state.saved[+b.dataset.say].es); }; });
+  el.querySelectorAll("[data-del]").forEach((b) => { b.onclick = () => { state.saved.splice(+b.dataset.del, 1); save(); renderSaved(); }; });
+}
+
+function renderSettings() {
+  $("#perday").value = String(state.perDay);
+  if (!$("#perday").value) $("#perday").value = "30";
+  $("#sound").textContent = `Música: ${state.sound ? "sí" : "no"}`;
+  $("#sound").classList.toggle("on", state.sound);
+  $("#slow").textContent = `Voz lenta: ${state.slow ? "sí" : "no"}`;
+  $("#slow").classList.toggle("on", state.slow);
+  const count = state.lines.filter((l) => !l.scene).length;
+  $("#source").textContent = state.source === "demo" ? `demo scenes (${count} lines)` : `your import (${count} lines)`;
+  const v = spanishVoice();
+  $("#voice-info").textContent = v ? `Voz: ${v.name} (${v.lang})` :
+    ("speechSynthesis" in window ? "No Spanish voice found yet. On iPhone: Settings → Accessibility → Spoken Content → Voices → Spanish." : "This browser can't read aloud.");
+}
+
+/* ================= Import ================= */
+function parseTable(text) {
+  text = text.replace(/^﻿/, "");
+  const first = text.split(/\r?\n/).find((l) => l.trim()) || "";
+  const count = (ch) => first.split(ch).length - 1;
+  const delim = count("\t") > 0 ? "\t" : count(";") > count(",") ? ";" : ",";
+  const rows = [];
+  let row = [], cell = "", quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (quoted) {
+      if (c === '"' && text[i + 1] === '"') { cell += '"'; i++; }
+      else if (c === '"') quoted = false;
+      else cell += c;
+    } else if (c === '"' && cell === "") quoted = true;
+    else if (c === delim) { row.push(cell); cell = ""; }
+    else if (c === "\n" || c === "\r") {
+      if (c === "\r" && text[i + 1] === "\n") i++;
+      row.push(cell); rows.push(row); row = []; cell = "";
+    } else cell += c;
+  }
+  row.push(cell); rows.push(row);
+  return rows.map((r) => r.map((c) => c.trim())).filter((r) => r.some((c) => c));
+}
+
+function toLines(rows) {
+  if (!rows.length) return [];
+  let col = null;
+  const head = rows[0].map((c) => c.toLowerCase());
+  const find = (...names) => head.findIndex((h) => names.some((n) => h.startsWith(n)));
+  const en = find("english", "inglés", "ingles", "en");
+  const es = find("spanish", "español", "espanol", "es");
+  if (en >= 0 && es >= 0 && en !== es) {
+    col = { sp: find("speaker", "personaje", "who", "quién", "quien", "character"), en, es };
+    rows = rows.slice(1);
+  }
+  const out = [];
+  rows.forEach((r) => {
+    if (r[0].startsWith("#")) { out.push({ scene: r.join(" ").replace(/^#+\s*/, "").trim() }); return; }
+    let l;
+    if (col) l = { sp: col.sp >= 0 ? r[col.sp] || "" : "", en: r[col.en] || "", es: r[col.es] || "" };
+    else if (r.length >= 3) l = { sp: r[0], en: r[1], es: r[2] };
+    else if (r.length === 2) l = { sp: "", en: r[0], es: r[1] };
+    else return;
+    if (l.en || l.es) out.push(l);
+  });
+  return out;
+}
+
+$("#file").onchange = async (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  $("#paste").value = await f.text();
+  $("#import-info").textContent = `${f.name} cargado. Tap Importar.`;
+};
+
+$("#import").onclick = () => {
+  const lines = toLines(parseTable($("#paste").value));
+  const count = lines.filter((l) => !l.scene).length;
+  if (!count) { toast("No encontré líneas · No lines found. Check the format above."); return; }
+  const perDay = state.source === "demo" ? 30 : state.perDay;
+  const days = buildDays(lines, perDay).length;
+  if (!confirm(`${count} lines → ${days} ${days === 1 ? "day" : "days"} at ${perDay} lines a day.\nReplace the current script and start at day 1?`)) return;
+  Object.assign(state, { lines, source: "import", perDay, pos: 0 });
+  peek = true;
+  save();
+  $("#paste").value = "";
+  $("#file").value = "";
+  $("#import-info").textContent = "";
+  renderAll();
+  showTab("today");
+  toast("¡Importado! · Imported");
+};
+
+$("#perday").onchange = (e) => {
+  // Keep his place: stay on the day that contains the line he's at.
+  state.perDay = +e.target.value;
+  save();
+  renderAll();
+};
+
+$("#sound").onclick = () => { state.sound = !state.sound; save(); renderSettings(); };
+$("#slow").onclick = () => { state.slow = !state.slow; save(); renderSettings(); renderToday(); };
+$("#test-voice").onclick = () => { hush(); say("¡Hola! Bienvenido. Vamos a aprender español."); };
+
+$("#export").onclick = () => {
+  const blob = new Blob([JSON.stringify(state)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `pixel-espanol-backup-${today()}.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+$("#restore").onchange = async (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  try {
+    const s = JSON.parse(await f.text());
+    if (!s || !Array.isArray(s.lines)) throw new Error("bad file");
+    state = Object.assign(fresh(), s);
+    save();
+    renderAll();
+    toast("¡Restaurado! · Restored");
+  } catch (err) {
+    toast("Archivo no válido · That isn't a backup file");
+  }
+  e.target.value = "";
+};
+$("#restart").onclick = () => {
+  if (!confirm("Go back to day 1? Saved lines and the streak stay.")) return;
+  state.pos = 0;
+  save();
+  renderAll();
+  showTab("today");
+};
+$("#demo").onclick = () => {
+  if (!confirm("Load the demo scenes? This replaces the current script and progress.")) return;
+  Object.assign(state, { lines: DEMO, source: "demo", perDay: 10, pos: 0 });
+  save();
+  renderAll();
+  showTab("today");
+};
+
+/* ================= Shell ================= */
+let toastTimer;
+function toast(msg) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.remove("hidden");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.add("hidden"), 2600);
+}
+function showTab(name) {
+  document.querySelectorAll("nav .btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === name));
+  document.querySelectorAll("main section").forEach((s) => s.classList.toggle("active", s.id === name));
+  if (name === "saved") renderSaved();
+  if (name === "settings") renderSettings();
+}
+document.querySelectorAll("nav .btn").forEach((b) => { b.onclick = () => { hush(); showTab(b.dataset.tab); }; });
+function renderAll() { renderToday(); renderSaved(); renderSettings(); }
+
+// Title screen: Beto dances on open, says "¡Bienvenido!" when you press start.
+const sceneCtx = $("#scene").getContext("2d");
+const drawScene = buildScene();
+const titleBeto = animator((frame, hop, now) => drawScene(sceneCtx, frame, hop, now));
+titleBeto.dance(3400);
+setTimeout(() => $("#bubble").classList.remove("hidden"), 500);
+
+const miniCtx = $("#mini").getContext("2d");
+const miniBeto = animator((frame, hop) => {
+  miniCtx.clearRect(0, 0, 18, 26);
+  drawSprite(miniCtx, frame, 0, Math.max(0, hop));
+});
+const HOLAS = ["¡Hola!", "¡Vamos!", "¡Qué onda!", "¡Tú puedes!", "¡Bienvenido!"];
+$("#mini").onclick = () => { miniBeto.dance(2000); hush(); say(HOLAS[Math.floor(Math.random() * HOLAS.length)]); };
+
+let started = false;
+$("#start").onclick = () => {
+  if (started) return;
+  started = true;
+  $("#start").style.animation = "none";
+  jingle();
+  hush();
+  setTimeout(() => say("¡Bienvenido!"), 700);
+  titleBeto.dance(2600);
+  setTimeout(() => {
+    $("#title").classList.add("fade");
+    setTimeout(() => $("#title").classList.add("hidden"), 450);
+  }, 2600);
+};
+
+loadVoices();
+if ("speechSynthesis" in window) speechSynthesis.onvoiceschanged = () => { loadVoices(); renderSettings(); };
+renderAll();
+
+if ("serviceWorker" in navigator && location.protocol !== "file:") {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+</script>
+</body>
+</html>
