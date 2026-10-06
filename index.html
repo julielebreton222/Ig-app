@@ -300,6 +300,7 @@ LALO,Hi.,Hola.</pre>
         <button class="btn small" id="audio-only">Solo audio: no</button>
       </div>
       <p class="note">Solo audio hides what they say until you answer: pure listening, like a real conversation.</p>
+      <div class="row" style="margin-top:10px"><button class="btn white small" id="test-mic">Probar micrófono</button></div>
       <p class="note" id="mic-info"></p>
     </div>
 
@@ -1142,22 +1143,86 @@ function match(alts, target) {
   return Math.max(0, ...alts.map((a) => similarity(open ? norm(a).split(" ").slice(0, words).join(" ") : a, t)));
 }
 let recognizer = null;
+// Calls onDone(alternatives, errorCode). Stops by itself after a short silence:
+// iPhones often never send a "final" result, so we don't wait for one.
 function listen(onDone) {
-  if (!Recognition) { onDone(null); return; }
+  if (!Recognition) { onDone([], "unsupported"); return; }
   hush();
   if (recognizer) try { recognizer.abort(); } catch (e) { /* already stopped */ }
   const r = new Recognition();
   const v = spanishVoice();
-  r.lang = v ? v.lang : "es-MX";
-  r.interimResults = false;
+  r.lang = v ? v.lang.replace("_", "-") : "es-MX";
+  r.interimResults = true;
+  r.continuous = false;
   r.maxAlternatives = 4;
-  let done = false;
-  const finish = (alts) => { if (done) return; done = true; recognizer = null; onDone(alts); };
-  r.onresult = (e) => finish([...e.results[0]].map((a) => a.transcript));
-  r.onerror = () => finish([]);
-  r.onend = () => finish([]);
+  let done = false, alts = [], err = null, quiet = null;
+  const stop = () => { try { r.stop(); } catch (e) { /* already stopped */ } };
+  const finish = () => {
+    if (done) return;
+    done = true;
+    clearTimeout(quiet); clearTimeout(cap); clearTimeout(giveUp);
+    recognizer = null;
+    onDone(alts, alts.length ? null : err || "no-speech");
+  };
+  const cap = setTimeout(stop, 8000);      // never listen forever
+  const giveUp = setTimeout(finish, 10000); // in case "end" never arrives
+  r.onresult = (e) => {
+    const last = e.results[e.results.length - 1];
+    const full = [...e.results].map((x) => x[0].transcript).join(" ").trim();
+    alts = [full, ...[...last].map((a) => a.transcript.trim())].filter((a, i, all) => a && all.indexOf(a) === i);
+    clearTimeout(quiet);
+    if (last.isFinal) stop(); else quiet = setTimeout(stop, 1400);
+  };
+  r.onerror = (e) => { err = e.error || "error"; };
+  r.onend = finish;
   recognizer = r;
-  try { r.start(); } catch (e) { finish([]); }
+  try { r.start(); } catch (e) { err = "start"; finish(); }
+}
+const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+function micError(code) {
+  switch (code) {
+    case "no-speech": return "No te oí. · Didn't hear anything. Tap, then talk right away.";
+    case "not-allowed":
+    case "service-not-allowed":
+      return isIOS
+        ? "Micrófono bloqueado. On iPhone: Settings → General → Keyboard → turn on Enable Dictation, and Settings → Apps → Safari → Microphone → Allow. Then reload."
+        : "Micrófono bloqueado. Allow the microphone for this site (lock icon next to the address), then reload.";
+    case "network": return "Needs internet to understand speech. Check the connection.";
+    case "audio-capture": return "No microphone found.";
+    case "language-not-supported": return "This phone can't recognize Spanish speech yet.";
+    case "unsupported": return "This browser can't understand speech. Use ● Grabar to record yourself and compare.";
+    default: return `The microphone didn't work (${code}). Tap to try again.`;
+  }
+}
+// Fallback when the browser can't understand speech: record him, then play
+// the model and his recording back to back so he can compare.
+const canRecord = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+let recording = null;
+async function recordCompare(button, text, out) {
+  if (recording) { recording.stop(); return; }
+  hush();
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch (e) { out.className = "heard bad"; out.textContent = micError("not-allowed"); return; }
+  const rec = new MediaRecorder(stream);
+  const parts = [];
+  rec.ondataavailable = (e) => { if (e.data.size) parts.push(e.data); };
+  rec.onstop = () => {
+    stream.getTracks().forEach((tr) => tr.stop());
+    clearTimeout(rec.cap);
+    recording = null;
+    button.classList.remove("on");
+    const url = URL.createObjectURL(new Blob(parts, { type: rec.mimeType || "audio/mp4" }));
+    out.className = "heard";
+    out.textContent = "Escucha: el modelo, y luego tú. · Model first, then you.";
+    say(text, () => { const a = new Audio(url); a.onended = () => URL.revokeObjectURL(url); a.play().catch(() => {}); });
+  };
+  recording = rec;
+  rec.start();
+  rec.cap = setTimeout(() => rec.state !== "inactive" && rec.stop(), 6000);
+  button.classList.add("on");
+  out.className = "heard";
+  out.textContent = "Grabando… tap ● again to stop.";
 }
 function verdict(score) {
   if (score >= .75) return ["good", "✓ ¡Perfecto!"];
@@ -1270,12 +1335,15 @@ function renderPhrases() {
       <div class="es">${esc(l.es)}</div>
       <div class="tools">
         <button class="btn white" data-say="${i}" aria-label="Escuchar · Listen">♪</button>
-        ${Recognition ? `<button class="btn white" data-mic="${i}" aria-label="Habla · Say it">◉</button>` : ""}
+        ${Recognition ? `<button class="btn white" data-mic="${i}" aria-label="Habla · Say it">◉</button>`
+          : canRecord ? `<button class="btn white" data-rec="${i}" aria-label="Grabar · Record">●</button>` : ""}
       </div>
       <div class="en">${esc(l.en)}</div>
       <div class="heard" id="heard-${i}"></div>
     </div>`).join("")}
-    ${Recognition ? "" : `<p class="note">Say each one out loud after you hear it.</p>`}
+    ${Recognition ? `<p class="note">◉ = say it and the app checks you.</p>`
+      : canRecord ? `<p class="note">● = record yourself, then hear the model and you back to back.</p>`
+      : `<p class="note">Say each one out loud after you hear it.</p>`}
   </div>
   <button class="btn big green" id="next">Siguiente: la escena ▶</button>`;
   el.querySelectorAll("[data-say]").forEach((b) => { b.onclick = () => { hush(); say(lines[+b.dataset.say].es); }; });
@@ -1285,15 +1353,18 @@ function renderPhrases() {
       out.className = "heard";
       out.textContent = "Escuchando… · Listening…";
       b.classList.add("on");
-      listen((alts) => {
+      listen((alts, err) => {
         b.classList.remove("on");
-        if (!alts || !alts.length) { out.textContent = "No te oí. · Didn't hear you. Tap ◉ and talk."; return; }
+        if (err) { out.className = "heard bad"; out.textContent = micError(err); return; }
         const [cls, msg] = verdict(match(alts, lines[i].es));
         out.className = `heard ${cls}`;
         out.textContent = `${msg} Oí: “${alts[0]}”`;
         blip(cls === "good");
       });
     };
+  });
+  el.querySelectorAll("[data-rec]").forEach((b) => {
+    b.onclick = () => recordCompare(b, lines[+b.dataset.rec].es, $(`#heard-${b.dataset.rec}`));
   });
   $("#next").onclick = nextStep;
 }
@@ -1371,14 +1442,14 @@ function renderTurn() {
       const mic = $("#mic");
       mic.classList.add("on");
       mic.textContent = "Escuchando… · Listening…";
-      listen((alts) => {
+      listen((alts, err) => {
         if (!run || run.answered) return;
         mic.classList.remove("on");
         mic.textContent = "◉ Habla · Say it";
-        const scores = opts.map((o) => match(alts || [], o));
+        const scores = opts.map((o) => match(alts, o));
         const top = scores.indexOf(Math.max(...scores));
-        if (!alts || !alts.length || scores[top] < .5) {
-          $("#feedback").innerHTML = `<span class="heard">No te entendí. ${alts && alts[0] ? `Oí: “${esc(alts[0])}”. ` : ""}Try again or tap.</span>`;
+        if (err || scores[top] < .5) {
+          $("#feedback").innerHTML = `<span class="heard">${err ? esc(micError(err)) : `No te entendí. Oí: “${esc(alts[0])}”. Try again or tap.`}</span>`;
           if (begun) startTimer(() => answer(-1));
           return;
         }
@@ -1479,6 +1550,7 @@ function renderReview() {
         ${rev.shown
           ? `<button class="btn white small" id="r-say">♪</button><button class="btn red small" id="r-no">✗ Otra vez</button><button class="btn green small" id="r-yes">✓ Lo sabía</button>`
           : `${Recognition ? `<button class="btn small" id="r-mic">◉ Decirlo</button>` : ""}<button class="btn white small" id="r-show">Mostrar</button>`}
+        ${rev.shown && !Recognition && canRecord ? `<button class="btn small" id="r-rec">● Grabar</button>` : ""}
       </div>
     </div>`;
   } else {
@@ -1506,8 +1578,8 @@ function renderReview() {
     if (mic) mic.onclick = () => {
       mic.textContent = "Escuchando…";
       mic.classList.add("on");
-      listen((alts) => {
-        if (!alts || !alts.length) { rev.heard = "No te oí. · Didn't hear you."; rev.cls = "bad"; renderReview(); return; }
+      listen((alts, err) => {
+        if (err) { rev.heard = micError(err); rev.cls = "bad"; renderReview(); return; }
         const [cls, msg] = verdict(match(alts, c.es));
         Object.assign(rev, { shown: true, heard: `${msg} Oí: “${alts[0]}”`, cls });
         blip(cls === "good");
@@ -1515,6 +1587,8 @@ function renderReview() {
         renderReview();
       });
     };
+    const recBtn = $("#r-rec");
+    if (recBtn) recBtn.onclick = () => recordCompare(recBtn, c.es, el.querySelector(".heard"));
     const sayBtn = $("#r-say");
     if (sayBtn) sayBtn.onclick = () => { hush(); say(c.es); };
     const grade = (known) => {
@@ -1642,9 +1716,11 @@ function renderSettings() {
   $("#slow").classList.toggle("on", state.slow);
   $("#audio-only").textContent = `Solo audio: ${state.audioOnly ? "sí" : "no"}`;
   $("#audio-only").classList.toggle("on", state.audioOnly);
+  const standalone = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
   $("#mic-info").textContent = Recognition
-    ? "The microphone checks your answers. The first time, allow microphone access."
-    : "This browser can't listen, so you'll tap answers instead (say them out loud anyway!). Chrome and Safari can listen.";
+    ? "The microphone checks your answers. The first time, allow microphone access. Tap Probar micrófono and say “hola”."
+    : `This ${standalone ? "home-screen app" : "browser"} can't understand speech, so you'll tap answers and use ● Grabar to record yourself.`
+      + (isIOS && standalone ? " On iPhone, opening the link in Safari instead may allow it." : " Chrome or Safari can usually listen.");
   const count = state.lines.filter((l) => !l.scene).length;
   $("#source").textContent = state.source === "demo" ? `demo scenes (${count} lines)` : `your import (${count} lines)`;
   const v = spanishVoice();
@@ -1848,6 +1924,16 @@ $("#slow").onclick = () => { state.slow = !state.slow; save(); renderSettings();
 $("#timer").onchange = (e) => { state.timer = +e.target.value; save(); };
 $("#audio-only").onclick = () => { state.audioOnly = !state.audioOnly; save(); renderSettings(); };
 $("#test-voice").onclick = () => { hush(); say("¡Hola! Bienvenido. Vamos a aprender español."); };
+$("#test-mic").onclick = () => {
+  const info = $("#mic-info"), b = $("#test-mic");
+  if (!Recognition) { info.textContent = micError("unsupported"); return; }
+  b.classList.add("on");
+  info.textContent = "Escuchando… di “hola”. · Listening… say “hola”.";
+  listen((alts, err) => {
+    b.classList.remove("on");
+    info.textContent = err ? micError(err) : `✓ Funciona. Oí: “${alts[0]}”`;
+  });
+};
 
 $("#export").onclick = () => {
   const blob = new Blob([JSON.stringify(state)], { type: "application/json" });
