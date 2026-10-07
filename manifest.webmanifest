@@ -1,7 +1,7 @@
 {
-  "name": "Pixel Español",
-  "short_name": "Pixel ES",
-  "description": "A few minutes of movie dialogue a day, in Spanish and English.",
+  "name": "Pixelito",
+  "short_name": "Pixelito",
+  "description": "Learn Spanish in Tuber Falls, Idaho. Get paid in potatoes.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

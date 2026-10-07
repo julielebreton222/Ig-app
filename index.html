@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Pixel Español</title>
-<meta name="description" content="A few minutes of movie dialogue a day, in Spanish and English.">
+<title>Pixelito</title>
+<meta name="description" content="Learn Spanish in Tuber Falls, Idaho. Get paid in potatoes.">
 <meta name="theme-color" content="#5fb3d9">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Pixel ES">
+<meta name="apple-mobile-web-app-title" content="Pixelito">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -205,6 +205,60 @@
   .answer { font-size: 30px; color: var(--green-2); margin: 10px 0 4px; }
   input[type=text] { width: 100%; background: var(--white); border: 4px solid var(--ink); padding: 8px; font-size: 20px; }
 
+  /* ---------- Potatoes, intro, stories, cards ---------- */
+  .goal { background: var(--cream-2); border: 4px solid var(--ink); padding: 10px; margin: 0 0 14px; }
+  .goal-head { display: flex; justify-content: space-between; font-family: var(--pix); font-size: 9px; line-height: 1.5; }
+  .goal .progress { margin: 6px 0; }
+  .goal .note { margin: 0; }
+  .plus { font-family: var(--pix); font-size: 16px; color: var(--green-2); vertical-align: middle; }
+  #intro { position: fixed; inset: 0; z-index: 9; background: #1d1430; display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .intro-card { width: min(100%, 420px); background: var(--cream); border: 4px solid var(--ink); box-shadow: 0 0 0 4px var(--cream), 8px 8px 0 #000; padding: 20px 16px; text-align: center; }
+  .intro-pic { min-height: 96px; display: flex; align-items: center; justify-content: center; }
+  .intro-pic img { width: 84px; height: 84px; image-rendering: pixelated; }
+  .intro-pic img.spud { width: 105px; height: 74px; }
+  .intro-es { font-family: var(--pix); font-size: 13px; line-height: 1.6; margin: 14px 0 8px; }
+  .intro-en { font-size: 23px; margin: 0 0 14px; color: var(--ink-soft); }
+  .dots { display: flex; gap: 6px; justify-content: center; margin-bottom: 14px; }
+  .dots i { width: 10px; height: 10px; background: var(--cream-2); border: 2px solid var(--ink); }
+  .dots i.on { background: var(--orange); }
+  .press-skip { background: none; border: 0; color: var(--ink-soft); font-family: var(--pix); font-size: 9px; margin-top: 12px; padding: 10px; cursor: pointer; }
+  .hw { text-decoration: underline; text-decoration-thickness: 3px; text-decoration-color: var(--orange); text-underline-offset: 4px; cursor: pointer; }
+  .hw.known { text-decoration-color: transparent; }
+  .narration .es { font-style: italic; color: var(--ink-soft); }
+  .sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 15; padding: 0 12px 12px; max-width: 720px; margin: 0 auto; }
+  .sheet .box { margin: 0; box-shadow: 0 -6px 0 rgba(59, 36, 22, .25); }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 14px; }
+  .chip { font-family: var(--pix); font-size: 8px; line-height: 1.4; padding: 8px; border: 3px solid var(--ink); background: var(--cream); cursor: pointer; }
+  .chip.on { background: var(--yellow); }
+  .chip b { color: var(--red); }
+  .deck-meta { display: flex; justify-content: space-between; font-family: var(--pix); font-size: 9px; margin: 0 0 8px; }
+  .card-stage { position: relative; height: 300px; margin-bottom: 14px; }
+  .flash {
+    position: absolute; inset: 0; background: var(--white); border: 4px solid var(--ink); box-shadow: 6px 6px 0 rgba(59, 36, 22, .35);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;
+    touch-action: none; user-select: none; cursor: grab; transition: transform .2s;
+  }
+  .flash .big-es { font-size: 36px; }
+  .flash .back { margin-top: 12px; padding-top: 12px; border-top: 4px dotted var(--cream-2); width: 100%; }
+  .flash .who { justify-content: center; }
+  .tap-hint { position: absolute; bottom: 8px; left: 0; right: 0; margin: 0; }
+  .pile-tag { position: absolute; top: 8px; left: 8px; font-family: var(--pix); font-size: 7px; padding: 4px 6px; border: 2px solid var(--ink); background: var(--cream); }
+  .pile-nose { background: #f9c3b8; } .pile-learn { background: #fde58a; } .pile-know { background: #b6e3b8; }
+  .chip.pile-nose.on, .chip.pile-learn.on, .chip.pile-know.on, .chip.pile-new.on { outline: 3px solid var(--ink); }
+  .stamp { position: absolute; font-family: var(--pix); font-size: 14px; padding: 6px 8px; border: 4px solid; opacity: 0; transform: rotate(-12deg); }
+  .stamp.left { top: 30px; right: 14px; color: var(--red); }
+  .stamp.right { top: 30px; left: 14px; color: var(--green-2); }
+  .stamp.up { bottom: 34px; left: 50%; transform: translateX(-50%); color: var(--orange); }
+  .flash[data-hint="nose"] .stamp.left, .flash[data-hint="know"] .stamp.right, .flash[data-hint="learn"] .stamp.up { opacity: 1; }
+  .swipe-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .swipe-btns .btn { font-size: 8px; padding: 12px 4px; }
+  .step-label { font-family: var(--pix); font-size: 10px; line-height: 1.6; margin: 16px 0 6px; }
+  .step-label span { display: block; font-family: var(--body); font-size: 18px; color: var(--ink-soft); }
+  .phrase-row { display: grid; grid-template-columns: 26px 1fr; gap: 8px; align-items: start; margin-bottom: 10px; }
+  .phrase-row .num { font-family: var(--pix); font-size: 12px; padding-top: 12px; }
+  .phrase-row input + input { margin-top: 4px; font-size: 18px; background: var(--cream); }
+  [data-kind] small { font-family: var(--body); font-size: 15px; text-transform: none; }
+
   /* ---------- Settings ---------- */
   textarea, select, input[type=file] {
     width: 100%; background: var(--white); border: 4px solid var(--ink); padding: 8px; font-size: 18px;
@@ -225,66 +279,43 @@
 
 <!-- Title screen: the dance and the welcome -->
 <div id="title">
-  <h1 class="logo">PIXEL<br>ESPAÑOL</h1>
+  <h1 class="logo">PIXELITO</h1>
   <div class="stage">
-    <canvas id="scene" width="72" height="56" aria-label="Beto dancing on a farm"></canvas>
+    <canvas id="scene" width="72" height="56" aria-label="Beto dancing at the school dance"></canvas>
     <div class="bubble hidden" id="bubble">¡BIENVENIDO!</div>
   </div>
   <div class="cast" id="cast"></div>
   <button class="press" id="start">▶ PULSA START<small>tap to start</small></button>
 </div>
 
+<!-- First launch: who these people are and why potatoes -->
+<div id="intro" class="hidden"></div>
+
 <header>
   <canvas id="mini" width="18" height="26" title="Tap Beto" aria-label="Beto. Tap him to make him dance."></canvas>
-  <h1 class="logo">PIXEL<br>ESPAÑOL</h1>
-  <div class="streak">RACHA<b><img id="spud" alt="" width="20" height="14"> <span id="streak">0</span></b></div>
+  <h1 class="logo">PIXELITO</h1>
+  <div class="streak">PAPAS<b><img id="spud" alt="" width="20" height="14"> <span id="streak">0</span></b></div>
 </header>
 
 <nav>
   <button class="btn active" data-tab="today">Hoy</button>
-  <button class="btn" data-tab="review">Repaso</button>
-  <button class="btn" data-tab="script">Guion</button>
+  <button class="btn" data-tab="stories">Historias</button>
+  <button class="btn" data-tab="cards">Tarjetas</button>
   <button class="btn" data-tab="settings">Ajustes</button>
 </nav>
 
 <main>
   <section id="today" class="active"><div id="lesson"></div><div id="mine"></div></section>
 
-  <section id="review"></section>
+  <section id="stories"></section>
 
-  <section id="script"></section>
+  <section id="cards"></section>
 
   <section id="settings">
     <div class="box">
-      <h2 class="h">Importar guion</h2>
-      <p class="sub">Import your script. It stays on this phone only.</p>
-      <p class="note">A spreadsheet saved as CSV, one line of dialogue per row:</p>
-      <pre>Speaker,English,Spanish
-BETO,Good morning.,Buenos días.
-# The bus stop
-LALO,Hi.,Hola.</pre>
-      <p class="note">A row starting with <code>#</code> is a scene title. Speaker is optional (just English,Spanish works too). Tabs or semicolons also work.</p>
-      <div class="row" style="margin:10px 0">
-        <input type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain">
-      </div>
-      <textarea id="paste" placeholder="…or paste the rows here"></textarea>
-      <div class="row" style="margin-top:10px">
-        <button class="btn green" id="import">Importar</button>
-        <span class="note" id="import-info"></span>
-      </div>
-    </div>
-
-    <div class="box">
-      <h2 class="h">Por día</h2>
-      <p class="sub">Lines per day. About 30 lines ≈ 2–3 minutes of a movie.</p>
-      <select id="perday">
-        <option value="10">10</option>
-        <option value="15">15</option>
-        <option value="20">20</option>
-        <option value="30">30</option>
-        <option value="40">40</option>
-        <option value="50">50</option>
-      </select>
+      <h2 class="h">La historia</h2>
+      <p class="sub">Who these people are, and why potatoes.</p>
+      <button class="btn white small" id="replay-story">Ver la historia otra vez</button>
     </div>
 
     <div class="box">
@@ -316,23 +347,18 @@ LALO,Hi.,Hola.</pre>
 
     <div class="box">
       <h2 class="h">Copia de seguridad</h2>
-      <p class="sub">Backup: keeps the script, your lessons, progress and review cards. Use it to move to a new phone.</p>
+      <p class="sub">Backup: potatoes, cards, your lessons and progress. Use it to move to a new phone.</p>
       <div class="row">
         <button class="btn white small" id="export">Exportar</button>
         <label class="btn white small">Restaurar<input type="file" id="restore" accept=".json,application/json" hidden></label>
+        <button class="btn red small" id="reset">Borrar todo</button>
       </div>
-    </div>
-
-    <div class="box">
-      <h2 class="h">Reiniciar</h2>
-      <div class="row">
-        <button class="btn white small" id="restart">Volver al día 1</button>
-        <button class="btn red small" id="demo">Cargar demo</button>
-      </div>
-      <p class="note">Content: <span id="source"></span></p>
     </div>
   </section>
 </main>
+
+<!-- Tapped word from a story -->
+<div id="word" class="sheet hidden"></div>
 
 <div class="toast hidden" id="toast"></div>
 
@@ -343,6 +369,7 @@ const PAL = {
   M: "#8a2a2a", G: "#3f8f4a", g: "#2f6e39", Y: "#f2c230", P: "#5a3d2b", R: "#d6402f",
   H: "#d9d4cc", A: "#e86aa0", N: "#bfe6f0", B: "#3b6fd1", b: "#2a52a0", F: "#b5652e",
   T: "#f28c28", L: "#4a2a18", V: "#8a5ad6", u: "#c8935a", U: "#8a5a35", d: "#6b4226",
+  Z: "#f2d36b", p: "#f08a8a",
 };
 
 // Wraps a pixel grid in a 1px dark outline.
@@ -419,6 +446,20 @@ const CAST = {
     "LL.VVVVVV.LL",
   ] },
 };
+CAST["tú"] = { name: "Tú", role: "el gringo", face: [
+  "..ZZZZZZZZ..",
+  ".ZZZZZZZZZZ.",
+  ".ZSSSSSSSSZ.",
+  ".SSSSSSSSSS.",
+  ".SSESSSSESS.",
+  "sSSSSppSSSSs",
+  ".SpSSSSSSpS.",
+  ".SSSMMMMSSS.",
+  ".SSSSSSSSSS.",
+  "..SSSSSSSS..",
+  "....SSSS....",
+  "..TYTYTYTY..",
+] };
 const POTATO = [
   "...UUUU...",
   ".UUuuuuUU.",
@@ -672,78 +713,6 @@ function say(text, onend) {
 function hush() {
   if ("speechSynthesis" in window) speechSynthesis.cancel();
 }
-
-/* ================= Content ================= */
-// Original demo scenes, so there's something to learn before importing.
-const DEMO = [
-  { scene: "La parada del autobús · The bus stop" },
-  { sp: "Beto", en: "Good morning.", es: "Buenos días." },
-  { sp: "Lalo", en: "Why are you wearing a cape?", es: "¿Por qué llevas una capa?" },
-  { sp: "Beto", en: "It's not a cape. It's a blanket with ambition.", es: "No es una capa. Es una manta con ambición." },
-  { sp: "Lalo", en: "The bus is late again.", es: "El autobús llega tarde otra vez." },
-  { sp: "Beto", en: "The bus is never late. We are just early.", es: "El autobús nunca llega tarde. Nosotros llegamos temprano." },
-  { sp: "Lalo", en: "It's eight thirty.", es: "Son las ocho y media." },
-  { sp: "Beto", en: "Then the bus is late.", es: "Entonces el autobús llega tarde." },
-  { sp: "Lalo", en: "Do you want half of my sandwich?", es: "¿Quieres la mitad de mi sándwich?" },
-  { sp: "Beto", en: "What kind?", es: "¿De qué es?" },
-  { sp: "Lalo", en: "Peanut butter and pickles.", es: "Mantequilla de maní y pepinillos." },
-  { sp: "Beto", en: "…Yes.", es: "…Sí." },
-  { scene: "La gallina · The chicken" },
-  { sp: "Abuela", en: "Beto, the chicken escaped again.", es: "Beto, la gallina se escapó otra vez." },
-  { sp: "Beto", en: "Which one?", es: "¿Cuál?" },
-  { sp: "Abuela", en: "The one that hates you.", es: "La que te odia." },
-  { sp: "Beto", en: "They all hate me.", es: "Todas me odian." },
-  { sp: "Abuela", en: "Bring her back before dinner.", es: "Tráela antes de la cena." },
-  { sp: "Beto", en: "What's for dinner?", es: "¿Qué hay de cena?" },
-  { sp: "Abuela", en: "Not chicken. Not yet.", es: "Pollo no. Todavía no." },
-  { sp: "Beto", en: "I'll get my bike.", es: "Voy por mi bicicleta." },
-  { sp: "Abuela", en: "Your bike has no seat.", es: "Tu bicicleta no tiene asiento." },
-  { sp: "Beto", en: "That's how I go faster.", es: "Así voy más rápido." },
-  { scene: "El baile · The dance" },
-  { sp: "Lalo", en: "Are you going to the school dance?", es: "¿Vas a ir al baile de la escuela?" },
-  { sp: "Beto", en: "I don't know how to dance.", es: "No sé bailar." },
-  { sp: "Lalo", en: "I saw you dancing this morning.", es: "Te vi bailando esta mañana." },
-  { sp: "Beto", en: "That was a stretching routine.", es: "Eso era una rutina de estiramiento." },
-  { sp: "Lalo", en: "With music?", es: "¿Con música?" },
-  { sp: "Beto", en: "Very intense stretching.", es: "Estiramiento muy intenso." },
-  { sp: "Lalo", en: "You should ask Marisol.", es: "Deberías invitar a Marisol." },
-  { sp: "Beto", en: "She doesn't know I exist.", es: "Ella no sabe que existo." },
-  { sp: "Lalo", en: "She asked me who the guy with the blanket is.", es: "Me preguntó quién es el chico de la manta." },
-  { sp: "Beto", en: "…I'm going to need a better blanket.", es: "…Voy a necesitar una manta mejor." },
-  { scene: "El tractor · The tractor" },
-  { sp: "Abuela", en: "Beto, do you know how to drive the tractor?", es: "Beto, ¿sabes manejar el tractor?" },
-  { sp: "Beto", en: "I've watched you drive it a thousand times.", es: "Te he visto manejarlo mil veces." },
-  { sp: "Abuela", en: "That's not what I asked.", es: "Eso no es lo que pregunté." },
-  { sp: "Beto", en: "Then no.", es: "Entonces no." },
-  { sp: "Abuela", en: "Today you learn. Get in.", es: "Hoy aprendes. Súbete." },
-  { sp: "Beto", en: "Where are the brakes?", es: "¿Dónde están los frenos?" },
-  { sp: "Abuela", en: "Good question. Very good question.", es: "Buena pregunta. Muy buena pregunta." },
-  { sp: "Beto", en: "Abuela?", es: "¿Abuela?" },
-  { sp: "Abuela", en: "The left one. Probably.", es: "El de la izquierda. Probablemente." },
-  { sp: "Beto", en: "Probably?!", es: "¡¿Probablemente?!" },
-  { scene: "Radio Papa · Potato Radio" },
-  { sp: "Marisol", en: "Good morning, school. This is Potato Radio.", es: "Buenos días, escuela. Esto es Radio Papa." },
-  { sp: "Marisol", en: "Today we have a special guest.", es: "Hoy tenemos un invitado especial." },
-  { sp: "Beto", en: "Hello.", es: "Hola." },
-  { sp: "Marisol", en: "Beto, what is your talent?", es: "Beto, ¿cuál es tu talento?" },
-  { sp: "Beto", en: "I know the name of every cow on my grandma's farm.", es: "Sé el nombre de cada vaca de la granja de mi abuela." },
-  { sp: "Marisol", en: "How many cows are there?", es: "¿Cuántas vacas hay?" },
-  { sp: "Beto", en: "Two.", es: "Dos." },
-  { sp: "Marisol", en: "…Thank you, Beto.", es: "…Gracias, Beto." },
-  { sp: "Beto", en: "Their names are Carla and also Carla.", es: "Se llaman Carla y también Carla." },
-  { sp: "Marisol", en: "And now, the weather.", es: "Y ahora, el clima." },
-  { scene: "La venta de velas · The candle sale" },
-  { sp: "Lalo", en: "Do you want to buy a candle? It's for the school.", es: "¿Quieres comprar una vela? Es para la escuela." },
-  { sp: "Beto", en: "What does it smell like?", es: "¿A qué huele?" },
-  { sp: "Lalo", en: "Like a candle.", es: "A vela." },
-  { sp: "Beto", en: "How much is it?", es: "¿Cuánto cuesta?" },
-  { sp: "Lalo", en: "Five dollars.", es: "Cinco dólares." },
-  { sp: "Beto", en: "I have two dollars and a pencil.", es: "Tengo dos dólares y un lápiz." },
-  { sp: "Lalo", en: "Is it a good pencil?", es: "¿Es un buen lápiz?" },
-  { sp: "Beto", en: "It's the best pencil I've ever had.", es: "Es el mejor lápiz que he tenido." },
-  { sp: "Lalo", en: "Deal.", es: "Trato hecho." },
-  { sp: "Beto", en: "Now I need a pencil.", es: "Ahora necesito un lápiz." },
-];
 
 /* ================= The course ================= */
 // Each lesson: key phrases (chunks) → a scene that uses them (input) →
@@ -1011,20 +980,386 @@ const LESSONS = [
   },
 ];
 
+LESSONS.push(
+  {
+    title: "El puesto de papas", en: "The potato stand", kind: "charla", role: "Tú", with: "Abuela",
+    goal: "Buy things: ask prices, numbers, how many.",
+    chunks: [
+      ["¿Cuánto cuesta?", "How much is it?"],
+      ["¿Cuántas quiere?", "How many do you want?"],
+      ["Quiero cinco, por favor.", "I want five, please."],
+      ["Es muy caro.", "It's very expensive."],
+      ["Es barato.", "It's cheap."],
+      ["Aquí tiene.", "Here you go."],
+    ],
+    scene: [
+      ["Abuela", "Buenos días. ¿Qué busca?", "Good morning. What are you looking for?"],
+      ["Beto", "Papas, abuela. Somos de aquí.", "Potatoes, grandma. We're from here."],
+      ["Abuela", "Hoy no eres mi nieto. Eres un cliente.", "Today you're not my grandson. You're a customer."],
+      ["Beto", "¿Cuánto cuesta una papa?", "How much is a potato?"],
+      ["Abuela", "Un dólar.", "One dollar."],
+      ["Beto", "Es muy caro. Ayer era gratis.", "That's very expensive. Yesterday it was free."],
+      ["Abuela", "Ayer eras mi nieto.", "Yesterday you were my grandson."],
+      ["Beto", "Quiero cinco, por favor.", "I want five, please."],
+      ["Abuela", "Aquí tiene. Son cinco dólares.", "Here you go. That's five dollars."],
+      ["Beto", "¿Acepta papas?", "Do you accept potatoes?"],
+    ],
+    live: [
+      ["Abuela", "Buenos días. ¿Qué busca?", "Good morning. What are you looking for?", ["Papas, por favor.", "Es muy caro.", "Aquí tiene."]],
+      ["Abuela", "Tengo papas grandes y papas chicas.", "I have big potatoes and small potatoes.", ["¿Cuánto cuesta una papa grande?", "Quiero cinco años.", "Es barato, gracias."]],
+      ["Abuela", "Dos dólares.", "Two dollars.", ["Es muy caro.", "Me llamo dos dólares.", "Aquí tiene."]],
+      ["Abuela", "Las chicas son baratas. Cincuenta centavos.", "The small ones are cheap. Fifty cents.", ["Quiero cinco, por favor.", "No es cierto.", "¿De dónde eres?"]],
+      ["Abuela", "Aquí tiene. Son dos dólares y cincuenta.", "Here you go. That's two fifty.", ["Aquí tiene. Gracias.", "¿Cuántas quiere?", "Es barato."]],
+      ["Abuela", "¿Quiere una bolsa?", "Do you want a bag?", ["No, gracias.", "Quiero cinco bolsas años.", "Me encanta la bolsa de mi primo."]],
+    ],
+  },
+  {
+    title: "No está lloviendo", en: "It's not raining", kind: "pleito", role: "Marisol", with: "Beto",
+    goal: "Talk about the weather and argue with obvious facts.",
+    chunks: [
+      ["Está lloviendo.", "It's raining."],
+      ["Hace frío.", "It's cold."],
+      ["Hace calor.", "It's hot."],
+      ["Estás mojado.", "You're wet."],
+      ["Mira.", "Look."],
+      ["Obviamente.", "Obviously."],
+    ],
+    scene: [
+      ["Marisol", "Beto, está lloviendo.", "Beto, it's raining."],
+      ["Beto", "No está lloviendo.", "It's not raining."],
+      ["Marisol", "Estás mojado.", "You're wet."],
+      ["Beto", "Es sudor. Hace calor.", "It's sweat. It's hot."],
+      ["Marisol", "Hace frío. Hay hielo en tu pelo.", "It's cold. There's ice in your hair."],
+      ["Beto", "Es un estilo nuevo.", "It's a new style."],
+      ["Marisol", "Mira. Tengo un paraguas.", "Look. I have an umbrella."],
+      ["Beto", "Obviamente. Porque estás exagerando.", "Obviously. Because you're exaggerating."],
+      ["Marisol", "¿Quieres entrar?", "Do you want to come in?"],
+      ["Beto", "…Sí. Pero no por la lluvia.", "…Yes. But not because of the rain."],
+    ],
+    live: [
+      ["Beto", "Qué buen día. Hace sol.", "What a nice day. It's sunny.", ["No. Está lloviendo.", "Hace calor, gracias.", "Quiero cinco, por favor."]],
+      ["Beto", "No está lloviendo.", "It's not raining.", ["Mira. Estás mojado.", "Obviamente, no está lloviendo.", "Es muy caro."]],
+      ["Beto", "Es sudor. Hace calor.", "It's sweat. It's hot.", ["No es cierto. Hace frío.", "Estoy de acuerdo.", "Aquí tiene."]],
+      ["Beto", "¿Frío? Yo no tengo frío.", "Cold? I'm not cold.", ["Tienes hielo en el pelo.", "Tengo un primo.", "Me llamo Marisol."]],
+      ["Beto", "Es un estilo nuevo.", "It's a new style.", ["¡Eso es ridículo!", "Me encanta el hielo.", "Nos vemos."]],
+      ["Beto", "Bueno. Tal vez está lloviendo un poco.", "Okay. Maybe it's raining a little.", ["¡Obviamente!", "No puedo.", "Igualmente."]],
+    ],
+  },
+  {
+    title: "Lalo está perdido", en: "Lalo is lost", kind: "charla", role: "Beto", with: "Lalo",
+    goal: "Give and follow directions around town.",
+    chunks: [
+      ["¿Dónde está…?", "Where is…?"],
+      ["a la izquierda", "to the left"],
+      ["a la derecha", "to the right"],
+      ["todo derecho", "straight ahead"],
+      ["Está cerca.", "It's close."],
+      ["Está lejos.", "It's far."],
+    ],
+    scene: [
+      ["Lalo", "Beto, ¿dónde está la biblioteca?", "Beto, where is the library?"],
+      ["Beto", "Está cerca. Todo derecho.", "It's close. Straight ahead."],
+      ["Lalo", "¿Y luego?", "And then?"],
+      ["Beto", "A la izquierda, en la vaca.", "Left, at the cow."],
+      ["Lalo", "¿Hay una vaca en la calle?", "There's a cow in the street?"],
+      ["Beto", "Siempre. Se llama Carla.", "Always. Her name is Carla."],
+      ["Lalo", "¿Y si Carla se mueve?", "And if Carla moves?"],
+      ["Beto", "Entonces la biblioteca está lejos.", "Then the library is far."],
+    ],
+    live: [
+      ["Lalo", "Beto, ¿dónde está la escuela?", "Beto, where is the school?", ["Está cerca. Todo derecho.", "Me llamo escuela.", "Es muy caro."]],
+      ["Lalo", "¿Y después?", "And after that?", ["A la derecha, en el tractor.", "Tengo hambre.", "Hace calor."]],
+      ["Lalo", "¿Y dónde está el puesto de papas?", "And where is the potato stand?", ["A la izquierda, en la vaca.", "Quiero cinco, por favor.", "Está lloviendo."]],
+      ["Lalo", "¿Está cerca?", "Is it close?", ["No. Está lejos.", "Sí, estoy de acuerdo.", "Mucho gusto."]],
+      ["Lalo", "¿Cómo llego?", "How do I get there?", ["En bicicleta. Sin asiento.", "Se llama Carla.", "Nos vemos a las ocho."]],
+      ["Lalo", "Gracias, Beto. Eres muy útil.", "Thanks, Beto. You're very helpful.", ["De nada.", "No es cierto.", "Para nada útil."]],
+    ],
+  },
+  {
+    title: "La vaca se comió mi tarea", en: "The cow ate my homework", kind: "pleito", role: "Marisol", with: "Beto",
+    goal: "Ask for and question excuses: why, what happened, really?",
+    chunks: [
+      ["¿Dónde está tu tarea?", "Where is your homework?"],
+      ["¿Qué pasó?", "What happened?"],
+      ["¿Por qué?", "Why?"],
+      ["No te creo.", "I don't believe you."],
+      ["Es la verdad.", "It's the truth."],
+      ["Otra vez.", "Again."],
+    ],
+    scene: [
+      ["Marisol", "Beto, ¿dónde está tu tarea?", "Beto, where is your homework?"],
+      ["Beto", "La vaca se la comió.", "The cow ate it."],
+      ["Marisol", "¿Otra vez?", "Again?"],
+      ["Beto", "Es una vaca muy estudiosa.", "She's a very studious cow."],
+      ["Marisol", "No te creo.", "I don't believe you."],
+      ["Beto", "Es la verdad. Ahora sabe sumar.", "It's the truth. Now she can add."],
+      ["Marisol", "¿Por qué la vaca estaba en tu cuarto?", "Why was the cow in your room?"],
+      ["Beto", "Porque estábamos estudiando.", "Because we were studying."],
+    ],
+    live: [
+      ["Beto", "Buenos días, Marisol.", "Good morning, Marisol.", ["¿Dónde está tu tarea?", "Está lloviendo.", "A la izquierda."]],
+      ["Beto", "La vaca se la comió.", "The cow ate it.", ["¿Otra vez?", "Es barato.", "Igualmente."]],
+      ["Beto", "Sí. Le gustan las matemáticas.", "Yes. She likes math.", ["No te creo.", "Me gustaría.", "Aquí tiene."]],
+      ["Beto", "Es la verdad.", "It's the truth.", ["¿Por qué estaba la vaca en tu cuarto?", "Hace frío.", "Tengo un primo."]],
+      ["Beto", "Porque estábamos estudiando.", "Because we were studying.", ["¡Eso es ridículo!", "De nada.", "Quiero pizza."]],
+      ["Beto", "Mañana te traigo la tarea. Y la vaca.", "Tomorrow I'll bring you the homework. And the cow.", ["La tarea, sí. La vaca, no.", "Nos vemos a las ocho.", "Está cerca."]],
+    ],
+  },
+  {
+    title: "El accidente del tractor", en: "The tractor accident", kind: "charla", role: "Beto", with: "Abuela",
+    goal: "Say what hurts and how you feel.",
+    chunks: [
+      ["¿Qué te pasa?", "What's wrong?"],
+      ["Me duele…", "My … hurts."],
+      ["la cabeza", "the head"],
+      ["la espalda", "the back"],
+      ["Estoy bien.", "I'm fine."],
+      ["Estoy cansado.", "I'm tired."],
+    ],
+    scene: [
+      ["Abuela", "Beto, ¿qué te pasa?", "Beto, what's wrong?"],
+      ["Beto", "Me duele la espalda.", "My back hurts."],
+      ["Abuela", "¿Por qué?", "Why?"],
+      ["Beto", "Usé el freno de la derecha.", "I used the right-hand brake."],
+      ["Abuela", "Te dije: el de la izquierda.", "I told you: the left one."],
+      ["Beto", "Dijiste 'probablemente'.", "You said 'probably'."],
+      ["Abuela", "¿Te duele la cabeza también?", "Does your head hurt too?"],
+      ["Beto", "No. Estoy bien. Estoy cansado. Y estoy en un árbol.", "No. I'm fine. I'm tired. And I'm in a tree."],
+    ],
+    live: [
+      ["Abuela", "Beto, ¿qué te pasa?", "Beto, what's wrong?", ["Me duele la espalda.", "Me llamo espalda.", "A la derecha."]],
+      ["Abuela", "¿Te duele la cabeza?", "Does your head hurt?", ["No. Estoy bien.", "Sí, es barato.", "¿Cuánto cuesta?"]],
+      ["Abuela", "¿Estás seguro? Estás en un árbol.", "Are you sure? You're in a tree.", ["Estoy bien. Estoy cansado.", "Está lejos.", "Hace calor, abuela."]],
+      ["Abuela", "¿Qué freno usaste?", "Which brake did you use?", ["El de la derecha.", "Me duele la izquierda.", "Mucho gusto."]],
+      ["Abuela", "Era el de la izquierda.", "It was the left one.", ["Dijiste 'probablemente'.", "Gracias, abuela.", "Te apuesto un dólar."]],
+      ["Abuela", "Baja del árbol. Hay sopa.", "Come down from the tree. There's soup.", ["Ya voy.", "No me gusta el árbol.", "Nos vemos a las ocho."]],
+    ],
+  },
+  {
+    title: "El plan de mudanza", en: "The moving plan", kind: "pleito", role: "Tú", with: "Beto",
+    goal: "Talk about plans: I'm going to, I want to, we need.",
+    chunks: [
+      ["Voy a…", "I'm going to…"],
+      ["Quiero vivir en…", "I want to live in…"],
+      ["Necesitamos…", "We need…"],
+      ["un boleto de autobús", "a bus ticket"],
+      ["No acepta papas.", "He doesn't accept potatoes."],
+      ["Es mi sueño.", "It's my dream."],
+    ],
+    scene: [
+      ["Beto", "Entonces, gringo. ¿Adónde vas a ir?", "So, gringo. Where are you going to go?"],
+      ["Tú", "Quiero vivir en un lugar con playa.", "I want to live somewhere with a beach."],
+      ["Beto", "Necesitamos un boleto de autobús.", "We need a bus ticket."],
+      ["Tú", "Tengo veinte papas.", "I have twenty potatoes."],
+      ["Beto", "El chofer acepta papas.", "The driver accepts potatoes."],
+      ["Tú", "No acepta papas, Beto.", "He doesn't accept potatoes, Beto."],
+      ["Beto", "Nunca le has preguntado.", "You've never asked him."],
+      ["Tú", "…Voy a preguntarle.", "…I'm going to ask him."],
+      ["Beto", "Es tu sueño. Lleva las papas grandes.", "It's your dream. Bring the big potatoes."],
+    ],
+    live: [
+      ["Beto", "Gringo, ¿adónde vas a ir?", "Gringo, where are you going to go?", ["Quiero vivir en un lugar con playa.", "Me duele la playa.", "Está cerca, gracias."]],
+      ["Beto", "¿Por qué?", "Why?", ["Porque es mi sueño.", "Porque hace frío.", "Porque la vaca se comió mi tarea."]],
+      ["Beto", "¿Y qué necesitamos?", "And what do we need?", ["Necesitamos un boleto de autobús.", "Necesitamos una vaca.", "Necesito la cabeza."]],
+      ["Beto", "Fácil. El chofer acepta papas.", "Easy. The driver accepts potatoes.", ["No acepta papas.", "Obviamente.", "Quiero cinco, por favor."]],
+      ["Beto", "¿Le preguntaste?", "Did you ask him?", ["No. Voy a preguntarle.", "Sí, me duele.", "Es barato."]],
+      ["Beto", "Entonces no sabes. Tengo razón.", "Then you don't know. I'm right.", ["No tienes razón. Pero voy a preguntarle.", "Estoy de acuerdo, Carla.", "Aquí tiene."]],
+    ],
+  },
+  {
+    title: "Radio Papa: ¿qué hiciste ayer?", en: "Potato Radio: what did you do yesterday?", kind: "charla", role: "Beto", with: "Marisol",
+    goal: "Tell what you did yesterday (the past).",
+    chunks: [
+      ["¿Qué hiciste ayer?", "What did you do yesterday?"],
+      ["Ayer fui a…", "Yesterday I went to…"],
+      ["Comí…", "I ate…"],
+      ["Vi…", "I saw…"],
+      ["Dormí mucho.", "I slept a lot."],
+      ["No hice nada.", "I didn't do anything."],
+    ],
+    scene: [
+      ["Marisol", "Buenos días, escuela. Esto es Radio Papa.", "Good morning, school. This is Potato Radio."],
+      ["Marisol", "Beto, ¿qué hiciste ayer?", "Beto, what did you do yesterday?"],
+      ["Beto", "Ayer fui al campo.", "Yesterday I went to the field."],
+      ["Marisol", "¿Y qué viste?", "And what did you see?"],
+      ["Beto", "Vi una papa con forma de pato.", "I saw a potato shaped like a duck."],
+      ["Marisol", "¿Y qué hiciste con la papa?", "And what did you do with the potato?"],
+      ["Beto", "Me la comí.", "I ate it."],
+      ["Marisol", "¿Y después?", "And after that?"],
+      ["Beto", "Dormí mucho. Fue un día largo.", "I slept a lot. It was a long day."],
+    ],
+    live: [
+      ["Marisol", "Beto, ¿qué hiciste ayer?", "Beto, what did you do yesterday?", ["Ayer fui al campo.", "Mañana voy al campo.", "Me duele el campo."]],
+      ["Marisol", "¿Y qué viste?", "And what did you see?", ["Vi una papa con forma de pato.", "Veo una vaca mañana.", "Es muy caro."]],
+      ["Marisol", "¿En serio? ¿Y qué hiciste con ella?", "Really? And what did you do with it?", ["Me la comí.", "Me llamo pato.", "A la izquierda."]],
+      ["Marisol", "¿Y por la tarde?", "And in the afternoon?", ["Dormí mucho.", "Duermo mañana.", "Hace calor."]],
+      ["Marisol", "¿Y hoy? ¿Qué vas a hacer?", "And today? What are you going to do?", ["No sé. Tal vez buscar otra papa.", "Ayer fui al campo.", "Aquí tiene."]],
+      ["Marisol", "Gracias, Beto. Qué vida tan emocionante.", "Thanks, Beto. What an exciting life.", ["De nada. Es la verdad.", "No hice nada, gracias.", "Me duele la cabeza, Marisol."]],
+    ],
+  },
+  {
+    title: "La papa perfecta", en: "The perfect potato", kind: "pleito", role: "Abuela", with: "Beto",
+    goal: "The final: compare, give opinions, and win.",
+    chunks: [
+      ["la mejor", "the best"],
+      ["la peor", "the worst"],
+      ["más grande que…", "bigger than…"],
+      ["Tienes que admitir…", "You have to admit…"],
+      ["En mi opinión…", "In my opinion…"],
+      ["¡Felicidades!", "Congratulations!"],
+    ],
+    scene: [
+      ["Beto", "Abuela, encontré la papa perfecta.", "Grandma, I found the perfect potato."],
+      ["Abuela", "Esa papa tiene cara.", "That potato has a face."],
+      ["Beto", "Por eso es la mejor.", "That's why it's the best."],
+      ["Abuela", "En mi opinión, es la peor.", "In my opinion, it's the worst."],
+      ["Beto", "Es más grande que tu cabeza.", "It's bigger than your head."],
+      ["Abuela", "Tienes que admitir que está fea.", "You have to admit that it's ugly."],
+      ["Beto", "Es fea. Pero es nuestra.", "It's ugly. But it's ours."],
+      ["Abuela", "…Dásela al gringo. Ya habla español.", "…Give it to the gringo. He speaks Spanish now."],
+      ["Beto", "¡Felicidades, gringo! Es tu papa número cien.", "Congratulations, gringo! It's your hundredth potato."],
+    ],
+    live: [
+      ["Beto", "Abuela, encontré la papa perfecta.", "Grandma, I found the perfect potato.", ["Esa papa tiene cara.", "Me duele la papa.", "Quiero vivir en la papa."]],
+      ["Beto", "Por eso es la mejor.", "That's why it's the best.", ["En mi opinión, es la peor.", "Estoy cansada, gracias.", "Está cerca."]],
+      ["Beto", "Es más grande que tu cabeza.", "It's bigger than your head.", ["No es cierto.", "Es barato.", "Ayer fui al campo."]],
+      ["Beto", "Mírala bien. Es preciosa.", "Look at it closely. It's beautiful.", ["Tienes que admitir que está fea.", "Aquí tiene.", "Necesitamos un boleto."]],
+      ["Beto", "Es fea. Pero es nuestra.", "It's ugly. But it's ours.", ["Bueno. Dásela al gringo.", "Me llamo nuestra.", "Hace frío."]],
+      ["Beto", "¿Al gringo? ¿Por qué?", "To the gringo? Why?", ["Porque ya habla español. ¡Felicidades!", "Porque está lloviendo.", "Porque no te creo."]],
+    ],
+  },
+);
+
+/* ================= Historias: short reads from Tuber Falls ================= */
+// {palabra|translation} marks a hard word: it's underlined and tappable.
+const STORIES = [
+  { title: "El lunes", en: "Monday", lines: [
+    ["", "Es lunes en Tuber Falls. {Llueve|It's raining}. Nadie está {sorprendido|surprised}.", "It's Monday in Tuber Falls. It's raining. Nobody is surprised."],
+    ["Beto", "Abuela, ¿dónde están mis {botas|boots}?", "Grandma, where are my boots?"],
+    ["Abuela", "La vaca las está usando.", "The cow is wearing them."],
+    ["Beto", "¿Las dos?", "Both of them?"],
+    ["Abuela", "Tiene cuatro patas, Beto. Necesita dos más.", "She has four legs, Beto. She needs two more."],
+  ] },
+  { title: "La biblioteca", en: "The library", lines: [
+    ["", "La biblioteca de Tuber Falls tiene once libros y un {bibliotecario|librarian} muy {serio|serious}.", "The Tuber Falls library has eleven books and a very serious librarian."],
+    ["Lalo", "Quiero un libro de {aventuras|adventures}.", "I want an adventure book."],
+    ["Beto", "Hay uno. Se llama 'Cómo {sembrar|to plant} papas'.", "There's one. It's called 'How to plant potatoes'."],
+    ["Lalo", "Eso no es una aventura.", "That's not an adventure."],
+    ["Beto", "No has leído el {capítulo|chapter} cuatro.", "You haven't read chapter four."],
+  ] },
+  { title: "El gringo llega", en: "The gringo arrives", lines: [
+    ["", "Un día, un gringo llega a la granja con una {maleta|suitcase} y un diccionario.", "One day, a gringo arrives at the farm with a suitcase and a dictionary."],
+    ["Abuela", "¿Qué quiere?", "What do you want?"],
+    ["Tú", "Quiero {aprender|to learn} español.", "I want to learn Spanish."],
+    ["Abuela", "¿Por qué aquí?", "Why here?"],
+    ["Tú", "Usted es la única persona que habla español en el {pueblo|town}.", "You're the only person who speaks Spanish in town."],
+    ["Abuela", "Bien. Le pago en papas. Empiece {mañana|tomorrow}.", "Fine. I'll pay you in potatoes. Start tomorrow."],
+  ] },
+  { title: "El autobús", en: "The bus", lines: [
+    ["", "El autobús pasa una vez al día. A veces dos, si el {chofer|driver} se {olvida|forgets} algo.", "The bus comes once a day. Sometimes twice, if the driver forgets something."],
+    ["Beto", "Buenos días. ¿Acepta papas?", "Good morning. Do you accept potatoes?"],
+    ["", "El chofer lo mira {durante|for} mucho tiempo.", "The driver looks at him for a long time."],
+    ["Beto", "¿Y {zanahorias|carrots}?", "And carrots?"],
+    ["", "El autobús se va.", "The bus leaves."],
+  ] },
+  { title: "La radio", en: "The radio", lines: [
+    ["Marisol", "Esto es Radio Papa. Hoy tenemos {noticias|news} importantes.", "This is Potato Radio. Today we have important news."],
+    ["Marisol", "La vaca Carla {escapó|escaped} otra vez.", "Carla the cow escaped again."],
+    ["Marisol", "Si la ve, no la {persiga|chase}. Ella es más rápida.", "If you see her, don't chase her. She's faster."],
+    ["Marisol", "Y ahora, el clima: {nublado|cloudy}, con posibilidad de vacas.", "And now, the weather: cloudy, with a chance of cows."],
+  ] },
+  { title: "La cena", en: "Dinner", lines: [
+    ["Abuela", "La cena está {lista|ready}.", "Dinner is ready."],
+    ["Beto", "¿Qué hay?", "What is there?"],
+    ["Abuela", "Papas {hervidas|boiled}, papas {fritas|fried} y {puré|mashed potatoes}.", "Boiled potatoes, fried potatoes and mashed potatoes."],
+    ["Lalo", "¿Hay algo que no sea papa?", "Is there anything that isn't potato?"],
+    ["", "Abuela y Beto lo miran en {silencio|silence}.", "Grandma and Beto look at him in silence."],
+    ["Lalo", "Me encanta el puré.", "I love mashed potatoes."],
+  ] },
+  { title: "El baile", en: "The dance", lines: [
+    ["", "El {gimnasio|gym} tiene luces, música y una bola de disco con una {grieta|crack}.", "The gym has lights, music and a disco ball with a crack."],
+    ["Marisol", "Beto, ¿vas a bailar?", "Beto, are you going to dance?"],
+    ["Beto", "Estoy {calentando|warming up}.", "I'm warming up."],
+    ["Marisol", "Llevas una hora calentando.", "You've been warming up for an hour."],
+    ["Beto", "Es un baile muy {peligroso|dangerous}.", "It's a very dangerous dance."],
+  ] },
+  { title: "La papa con cara", en: "The potato with a face", lines: [
+    ["", "Beto encuentra una papa con cara. La cara está {enojada|angry}.", "Beto finds a potato with a face. The face is angry."],
+    ["Beto", "Hola. ¿Por qué estás enojada?", "Hi. Why are you angry?"],
+    ["", "La papa no {contesta|answers}. Es una papa.", "The potato doesn't answer. It's a potato."],
+    ["Beto", "{Entiendo|I understand}. Yo también tengo días así.", "I understand. I have days like that too."],
+  ] },
+  { title: "El examen", en: "The exam", lines: [
+    ["Lalo", "¿{Estudiaste|Did you study} para el examen?", "Did you study for the exam?"],
+    ["Beto", "Estudié con la vaca.", "I studied with the cow."],
+    ["Lalo", "¿Y qué {aprendiste|did you learn}?", "And what did you learn?"],
+    ["Beto", "Que la vaca sabe más que yo.", "That the cow knows more than me."],
+    ["Lalo", "Eso es {preocupante|worrying}.", "That's worrying."],
+    ["Beto", "Para la vaca, no.", "Not for the cow."],
+  ] },
+  { title: "El tractor nuevo", en: "The new tractor", lines: [
+    ["Abuela", "Compré un tractor nuevo.", "I bought a new tractor."],
+    ["Beto", "¿Tiene {frenos|brakes}?", "Does it have brakes?"],
+    ["Abuela", "Tiene tres.", "It has three."],
+    ["Beto", "¿Cuál {funciona|works}?", "Which one works?"],
+    ["Abuela", "Eso es lo {emocionante|exciting}.", "That's the exciting part."],
+  ] },
+  { title: "Las velas", en: "The candles", lines: [
+    ["Lalo", "Vendí {todas|all} las velas.", "I sold all the candles."],
+    ["Marisol", "¿A quién?", "To whom?"],
+    ["Lalo", "A Beto.", "To Beto."],
+    ["Marisol", "¿Por qué Beto {necesita|needs} cuarenta velas?", "Why does Beto need forty candles?"],
+    ["Beto", "Para {practicar|to practice} el baile. Con {ambiente|atmosphere}.", "To practice the dance. With atmosphere."],
+  ] },
+  { title: "La carta", en: "The letter", lines: [
+    ["", "El gringo escribe una {carta|letter} en español. Es su primera carta.", "The gringo writes a letter in Spanish. It's his first letter."],
+    ["Tú", "'Querida playa: {pronto|soon} voy. Tengo cuarenta papas.'", "'Dear beach: I'm coming soon. I have forty potatoes.'"],
+    ["Beto", "Las playas no leen.", "Beaches don't read."],
+    ["Tú", "Es {simbólico|symbolic}.", "It's symbolic."],
+    ["Beto", "Pon {sello|stamp} de todos modos.", "Put a stamp on it anyway."],
+  ] },
+];
+
+/* ================= Tarjetas: starter deck of words that are hard to say ================= */
+const STARTER_CARDS = [
+  ["ferrocarril", "railroad"], ["refrigerador", "refrigerator"], ["desarrollar", "to develop"],
+  ["murciélago", "bat (animal)"], ["aguacate", "avocado"], ["trabalenguas", "tongue twister"],
+  ["otorrinolaringólogo", "ear, nose & throat doctor"], ["perro / pero", "dog / but"],
+  ["carro / caro", "car / expensive"], ["ahorita", "right now (…or later)"],
+  ["embarazada", "pregnant (not embarrassed!)"], ["éxito", "success (not exit)"],
+  ["constipado", "has a cold (not constipated)"], ["Me gusta…", "I like… (literally: …pleases me)"],
+  ["Tengo hambre.", "I'm hungry (literally: I have hunger)"], ["la tortilla", "the tortilla"],
+  ["el ratón", "the mouse"], ["la llave", "the key"], ["el pollo", "the chicken (food)"],
+  ["la jirafa", "the giraffe"], ["el arroz", "rice"], ["la ciudad", "the city"],
+  ["Erre con erre, cigarro.", "R with R, cigar (tongue twister)"], ["¿Qué onda?", "What's up?"],
+  ["Lo siento.", "I'm sorry."], ["Disculpe.", "Excuse me."], ["¿Me puede ayudar?", "Can you help me?"],
+  ["No entiendo.", "I don't understand."], ["Más despacio, por favor.", "Slower, please."],
+  ["¿Cómo se dice…?", "How do you say…?"],
+];
+
 /* ================= State (saved on this device only) ================= */
-const KEY = "pixel-espanol-v1";
+const KEY = "pixelito-v1";
+const OLD_KEY = "pixel-espanol-v1";
 function fresh() {
   return {
-    lines: DEMO, source: "demo", perDay: 10, pos: 0, lesson: 0, lastDone: null, streak: 0,
-    saved: [], srs: {}, custom: [], hideEn: false, slow: false, sound: true, timer: 10, audioOnly: false,
+    lesson: 0, lastDone: null, streak: 0, potatoes: 0, seenStory: false,
+    deck: {}, known: [], read: [], custom: [], swipes: 0,
+    hideEn: false, hardStories: false, reverse: false, slow: false, sound: true, timer: 10, audioOnly: false,
   };
 }
 function load() {
   try {
     const s = JSON.parse(localStorage.getItem(KEY));
-    if (s && Array.isArray(s.lines)) {
-      if (s.source === "demo") s.lines = DEMO;
-      return Object.assign(fresh(), s);
+    if (s && s.deck) return Object.assign(fresh(), s);
+    // Carry progress over from the earlier version of the app.
+    const old = JSON.parse(localStorage.getItem(OLD_KEY));
+    if (old) {
+      const s2 = fresh();
+      ["lesson", "lastDone", "streak", "custom", "slow", "sound", "timer", "audioOnly", "hideEn"].forEach((k) => { if (k in old) s2[k] = old[k]; });
+      s2.potatoes = (old.lesson || 0) * 3;
+      Object.values(old.srs || {}).forEach((c) => { s2.deck[c.es] = { es: c.es, en: c.en || "", cue: c.cue, cueEn: c.cueEn, sp: c.sp, pile: "learn", box: c.box || 0, due: c.due || null }; });
+      (old.saved || []).forEach((l) => { if (!s2.deck[l.es]) s2.deck[l.es] = { es: l.es, en: l.en, pile: "new", box: 0, due: null }; });
+      return s2;
     }
   } catch (e) { /* storage unavailable or corrupt */ }
   return fresh();
@@ -1034,41 +1369,15 @@ function save() {
   catch (e) { toast("No se pudo guardar · Couldn't save on this device"); }
 }
 let state = load();
+STARTER_CARDS.forEach(([es, en]) => { if (!state.deck[es]) state.deck[es] = { es, en, pile: "new", box: 0, due: null, src: "starter" }; });
 let peek = false;
 
 const dateStr = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 const today = () => dateStr(new Date());
 const yesterday = () => { const d = new Date(); d.setDate(d.getDate() - 1); return dateStr(d); };
+const addDays = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return dateStr(d); };
 
-// Split the script into daily chunks, preferring to break at scene titles.
-function buildDays(lines, perDay) {
-  const hasScenes = lines.some((l) => l.scene);
-  const days = [];
-  let cur = null;
-  const open = (i) => { cur = { start: i, items: [], count: 0, title: null }; };
-  const close = () => { if (cur && cur.count) days.push(cur); cur = null; };
-  lines.forEach((l, i) => {
-    if (!cur) open(i);
-    if (l.scene) {
-      if (hasScenes && cur.count >= Math.ceil(perDay * 0.6)) { close(); open(i); }
-      if (!cur.title) cur.title = l.scene;
-      cur.items.push(l);
-      return;
-    }
-    cur.items.push(l);
-    cur.count++;
-    if (cur.count >= (hasScenes ? Math.ceil(perDay * 1.25) : perDay)) close();
-  });
-  close();
-  return days;
-}
-function currentDay(days) {
-  let idx = 0;
-  days.forEach((d, i) => { if (d.start <= state.pos) idx = i; });
-  return state.pos >= state.lines.length ? days.length : idx;
-}
-
-/* ================= Rendering ================= */
+/* ================= Rendering helpers ================= */
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -1083,6 +1392,30 @@ function bigFace(sp) {
   return face ? `<img src="${face}" alt="">` : "";
 }
 
+/* ================= Potatoes: the moving fund ================= */
+const GOALS = [
+  [100, "un boleto de autobús", "a bus ticket south"],
+  [250, "una hamaca", "a hammock"],
+  [500, "una casita en la playa", "a little house on the beach"],
+  [1000, "una visita de Abuela", "a visit from Abuela (with potatoes)"],
+];
+function nextGoal() { return GOALS.find(([n]) => state.potatoes < n) || GOALS[GOALS.length - 1]; }
+function goalHTML() {
+  const [n, es, en] = nextGoal();
+  const pct = Math.min(100, Math.round((state.potatoes / n) * 100));
+  return `<div class="goal">
+    <div class="goal-head"><span>Fondo de mudanza</span><span>${state.potatoes} / ${n}</span></div>
+    <div class="progress"><i style="width:${pct}%"></i></div>
+    <p class="note">${n} papas = ${esc(es)} · ${esc(en)}</p>
+  </div>`;
+}
+function award(n, why) {
+  const before = state.potatoes;
+  state.potatoes += n;
+  renderStreak();
+  const passed = GOALS.find(([g]) => before < g && state.potatoes >= g);
+  toast(passed ? `¡${passed[0]} papas! Ya tienes ${passed[1]}.` : `+${n} ${n === 1 ? "papa" : "papas"} · ${why}`);
+}
 function registerDone() {
   if (state.lastDone !== today()) {
     state.streak = state.lastDone === yesterday() ? state.streak + 1 : 1;
@@ -1097,7 +1430,7 @@ function celebrate(word) {
   say(word || "¡Muy bien!");
 }
 function renderStreak() {
-  $("#streak").textContent = state.streak;
+  $("#streak").textContent = state.potatoes;
   $("#spud").src = potatoURL();
 }
 
@@ -1118,6 +1451,21 @@ function wirePlayAll(el, button, lines) {
     };
     next(0);
   };
+}
+
+/* ================= Flashcard deck (with spaced repetition) ================= */
+const GAPS = [0, 1, 3, 7, 14, 30, 60]; // days until a known card comes back, by box
+function addCard(card, pile = "new") {
+  if (!card.es || state.deck[card.es]) return false;
+  state.deck[card.es] = Object.assign({ en: "" }, card, { pile, box: 0, due: null });
+  return true;
+}
+// Today's stack: cards you don't know first, then learning, then new, then known ones that are due.
+function todaysCards() {
+  const rank = { nose: 0, learn: 1, new: 2, know: 3 };
+  return Object.values(state.deck)
+    .filter((c) => c.pile === "new" || !c.due || c.due <= today())
+    .sort((a, b) => rank[a.pile] - rank[b.pile] || (a.due || "").localeCompare(b.due || ""));
 }
 
 /* ================= Listening: speech recognition ================= */
@@ -1230,19 +1578,6 @@ function verdict(score) {
   return ["bad", "✗ Otra vez."];
 }
 
-/* ================= Spaced review ================= */
-const GAPS = [0, 1, 3, 7, 14, 30, 60]; // days until a card comes back, by box
-const addDays = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return dateStr(d); };
-function addCard(card, box) {
-  const c = state.srs[card.es];
-  if (c) {
-    if (box < c.box) { c.box = box; c.due = addDays(GAPS[box]); }
-    return;
-  }
-  state.srs[card.es] = Object.assign({}, card, { box, due: addDays(GAPS[box]) });
-}
-const dueCards = () => Object.values(state.srs).filter((c) => c.due <= today());
-
 /* ================= Hoy: today's lesson ================= */
 let run = null;      // the lesson in progress
 let timerId = null;
@@ -1272,13 +1607,13 @@ function renderLessons() {
   renderMine();
   if (run) { renderRun(); return; }
   const n = state.lesson;
-  const due = dueCards().length;
-  const dueNote = due ? `<p class="note">Tienes ${due} ${due === 1 ? "frase" : "frases"} para repasar en <b>Repaso</b>.</p>` : "";
+  const due = todaysCards().length;
+  const dueNote = due ? `<p class="note">Tienes ${due} ${due === 1 ? "tarjeta" : "tarjetas"} para hoy en <b>Tarjetas</b>.</p>` : "";
 
   if (n >= LESSONS.length) {
     el.innerHTML = `<div class="box done-card">
       <p class="h">¡Terminaste el curso!</p>
-      <p>All ${LESSONS.length} lessons done. Keep the phrases fresh in Repaso, and read your movie script in Guion.</p>${dueNote}
+      <p>All ${LESSONS.length} lessons done. Abuela is impressed. She won't say it. Keep the phrases fresh in Tarjetas and Historias, and make your own lessons below.</p>${goalHTML()}${dueNote}
       <button class="btn white small" id="again">Repetir el curso</button></div>`;
     $("#again").onclick = () => { state.lesson = 0; save(); renderLessons(); };
     return;
@@ -1287,7 +1622,9 @@ function renderLessons() {
     el.innerHTML = `<div class="box done-card">
       <p class="h">¡Listo por hoy!</p>
       <p><img class="spud" src="${potatoURL()}" alt="" width="60" height="42"></p>
-      <p>¡Ganaste una papa! You earned a potato.<br>Racha: <b>${state.streak}</b> ${state.streak === 1 ? "papa" : "papas"} in a row.<br>Mañana: lección ${n + 1} de ${LESSONS.length}.</p>${dueNote}
+      <p>Abuela te pagó en papas. Racha: <b>${state.streak}</b> ${state.streak === 1 ? "día" : "días seguidos"}.<br>Mañana: lección ${n + 1} de ${LESSONS.length}.</p>
+      ${goalHTML()}${dueNote}
+      <p class="note">Want more potatoes today? Read a Historia, swipe Tarjetas, or:</p>
       <button class="btn white small" id="more">Una lección más (opcional)</button></div>`;
     $("#more").onclick = () => { peek = true; renderLessons(); };
     return;
@@ -1296,6 +1633,7 @@ function renderLessons() {
   const L = LESSONS[n];
   const fight = L.kind === "pleito";
   el.innerHTML = `<div class="box">
+    ${goalHTML()}
     <p class="h">Lección ${n + 1} / ${LESSONS.length}</p>
     <div class="progress"><i style="width:${Math.round((n / LESSONS.length) * 100)}%"></i></div>
     <span class="tag ${fight ? "fight" : ""}">${fight ? "¡Pleito! · Argument" : "Charla · Conversation"}</span>
@@ -1310,7 +1648,7 @@ function renderLessons() {
       <li><b>Frases:</b> ${L.chunks.length} phrases you'll actually use. Hear them, say them.</li>
       <li><b>Escena:</b> see them in a scene. Understand from context.</li>
       <li><b>¡En vivo!:</b> you play ${esc(L.role)}. ${esc(L.with)} talks, the clock runs, you answer out loud.</li>
-      <li><b>Repaso:</b> what you miss comes back in a few days, right before you'd forget it.</li>
+      <li><b>Papas:</b> 3 potatoes for finishing, 5 for a perfect round. The phrases go to Tarjetas.</li>
     </ol>${dueNote}
   </div>
   <button class="btn big green" id="go">¡Empezar! ▶</button>`;
@@ -1496,12 +1834,18 @@ function answer(chosen, heard) {
 
 function finishLesson() {
   run.step = 3;
-  run.L.chunks.forEach(([es, en]) => addCard({ es, en }, 1));
-  run.missed.forEach((m) => addCard(m, 0));
+  run.L.chunks.forEach(([es, en]) => addCard({ es, en, src: "lesson" }, "new"));
+  run.missed.forEach((m) => {
+    if (!addCard(Object.assign({ src: "lesson" }, m), "nose")) Object.assign(state.deck[m.es], { pile: "nose", due: today() });
+  });
+  const perfect = run.score === run.L.live.length;
+  run.earned = 0;
   if (!run.finished) {
     run.finished = true;
-    state.lesson = Math.max(state.lesson, run.n + 1);
+    run.earned = (run.L.custom ? 2 : 3) + (perfect ? 2 : 0);
+    if (run.n >= 0) state.lesson = Math.max(state.lesson, run.n + 1);
     registerDone();
+    award(run.earned, perfect ? "¡perfecto!" : "lección");
   }
   peek = false;
   save();
@@ -1520,9 +1864,9 @@ function renderResult() {
   el.innerHTML = `${stepper(3)}<div class="box done-card">
     <p class="h">${run.L.kind === "pleito" ? (s >= total - 1 ? "¡Ganaste el pleito!" : "Pleito empatado") : "¡Lección lista!"}</p>
     <p class="score">${s} / ${total}</p>
-    <p><img class="spud" src="${potatoURL()}" alt="" width="60" height="42"></p>
+    <p><img class="spud" src="${potatoURL()}" alt="" width="60" height="42">${run.earned ? ` <b class="plus">+${run.earned}</b>` : ""}</p>
     <div class="speaker" style="justify-content:center">${bigFace("Beto")}<div class="speech"><div class="es">${line[0]}</div><div class="en">${line[1]}</div></div></div>
-    <p>${run.missed.length ? `${run.missed.length} ${run.missed.length === 1 ? "answer goes" : "answers go"} to Repaso for later.` : "Nothing missed!"} The ${run.L.chunks.length} phrases come back tomorrow.</p>
+    <p>${run.missed.length ? `${run.missed.length} ${run.missed.length === 1 ? "answer goes" : "answers go"} to Tarjetas (No sé) to practice.` : "Nothing missed!"} The phrases are in Tarjetas now.</p>
     <div class="row" style="justify-content:center">
       <button class="btn white small" id="redo">Otra vez en vivo</button>
       <button class="btn green small" id="close">Terminar</button>
@@ -1532,204 +1876,278 @@ function renderResult() {
   $("#close").onclick = () => { run = null; renderLessons(); };
 }
 
-/* ================= Repaso: spaced review + saved lines ================= */
-let rev = null; // { queue: [keys], done, shown, heard }
-function renderReview() {
-  const el = $("#review");
-  renderStreak();
-  let html = "";
-  if (rev && rev.queue.length) {
-    const c = state.srs[rev.queue[0]];
-    html = `<div class="box">
-      <p class="h">Repaso · ${rev.done} hechas · ${rev.queue.length} quedan</p>
-      ${c.cue ? `${who(c.sp)}<div class="es">${esc(c.cue)}</div><p class="sub">${esc(c.cueEn)}</p><p>¿Qué contestas? · What do you answer?</p>`
-        : `<p class="sub">¿Cómo se dice…? · How do you say…?</p><div class="es">${esc(c.en)}</div>`}
-      <div class="${rev.shown ? "" : "hidden"}"><p class="answer">${esc(c.es)}</p></div>
-      <div class="heard ${rev.cls || ""}">${esc(rev.heard || "")}</div>
-      <div class="row" style="margin-top:10px">
-        ${rev.shown
-          ? `<button class="btn white small" id="r-say">♪</button><button class="btn red small" id="r-no">✗ Otra vez</button><button class="btn green small" id="r-yes">✓ Lo sabía</button>`
-          : `${Recognition ? `<button class="btn small" id="r-mic">◉ Decirlo</button>` : ""}<button class="btn white small" id="r-show">Mostrar</button>`}
-        ${rev.shown && !Recognition && canRecord ? `<button class="btn small" id="r-rec">● Grabar</button>` : ""}
-      </div>
-    </div>`;
+/* ================= Tarjetas: swipe flashcards ================= */
+const PILES = {
+  nose: ["No sé", "I don't know"],
+  learn: ["Aprendiendo", "I'm learning"],
+  know: ["Ya sé", "I already know"],
+  new: ["Nuevas", "New"],
+};
+let deckRun = null; // { queue: [keys], flipped, done }
+let deckView = "swipe";
+function renderCards() {
+  const el = $("#cards");
+  const all = Object.values(state.deck);
+  const counts = { new: 0, nose: 0, learn: 0, know: 0 };
+  all.forEach((c) => { counts[c.pile]++; });
+  const chips = ["nose", "learn", "know", "new"].map((p) =>
+    `<button class="chip pile-${p} ${deckView === p ? "on" : ""}" data-view="${p}">${PILES[p][0]} <b>${counts[p]}</b></button>`).join("");
+
+  let body = "";
+  if (deckView === "swipe") {
+    if (!deckRun || !deckRun.queue.length) {
+      const due = todaysCards().length;
+      body = `<div class="box">
+        <p class="h">Tarjetas</p>
+        <p class="sub">Swipe through words that are hard to say. <b>← No sé</b> · <b>↑ Aprendiendo</b> · <b>Ya sé →</b>. Cards you know come back later and later; the ones you don't, come back soon.</p>
+        ${deckRun && deckRun.done ? `<p class="good">¡Listo! ${deckRun.done} tarjetas.</p>` : ""}
+        ${due ? `<button class="btn big green" id="d-go">Empezar · ${Math.min(due, 20)} tarjetas ▶</button>`
+          : `<p>Nada para hoy. Vuelve mañana.</p><button class="btn white small" id="d-all">Practicar todas</button>`}
+        <div class="row" style="margin-top:12px">
+          <button class="btn small ${state.reverse ? "on" : ""}" id="d-rev">${state.reverse ? "Inglés → Español" : "Español → Inglés"}</button>
+        </div>
+        <p class="note">${state.reverse ? "You see the English and say the Spanish (harder, better for speaking)." : "You see the Spanish and recall the English."}</p>
+      </div>`;
+    } else {
+      const c = state.deck[deckRun.queue[0]];
+      const front = c.cue
+        ? `${who(c.sp)}<div class="es">${esc(c.cue)}</div><p class="sub">¿Qué contestas? · What do you answer?</p>`
+        : state.reverse ? `<div class="es">${esc(c.en)}</div><p class="sub">¿Cómo se dice? · Say it in Spanish</p>` : `<div class="es big-es">${esc(c.es)}</div>`;
+      const back = c.cue || state.reverse ? `<div class="es big-es">${esc(c.es)}</div>` : `<div class="en">${esc(c.en)}</div>`;
+      body = `<div class="deck-meta"><span>${deckRun.done} hechas</span><span>${deckRun.queue.length} quedan</span></div>
+        <div class="card-stage">
+          <div class="flash" id="flash">
+            <span class="stamp left">NO SÉ</span><span class="stamp up">APRENDIENDO</span><span class="stamp right">YA SÉ</span>
+            <span class="pile-tag pile-${c.pile}">${PILES[c.pile][0]}</span>
+            ${front}
+            <div class="back ${deckRun.flipped ? "" : "hidden"}">${back}</div>
+            <p class="note tap-hint">${deckRun.flipped ? "" : "Toca para voltear · Tap to flip"}</p>
+          </div>
+        </div>
+        <div class="swipe-btns">
+          <button class="btn red" id="s-no">← No sé</button>
+          <button class="btn" id="s-learn">↑ Aprendiendo</button>
+          <button class="btn green" id="s-yes">Ya sé →</button>
+        </div>
+        <div class="row" style="justify-content:center;margin-top:10px">
+          <button class="btn white small" id="s-say">♪ Escuchar</button>
+          ${Recognition ? `<button class="btn white small" id="s-mic">◉ Decirlo</button>` : ""}
+          <button class="btn white small" id="s-stop">Parar</button>
+        </div>
+        <p class="heard" id="s-heard" style="text-align:center"></p>`;
+    }
   } else {
-    const due = dueCards();
-    const finished = rev && rev.done;
-    html = `<div class="box">
-      <p class="h">Repaso</p>
-      <p class="sub">Spaced repetition: each phrase comes back right before you'd forget it, a little later each time you know it.</p>
-      ${finished ? `<p class="good">¡Repaso terminado! ${rev.done} ${rev.done === 1 ? "frase" : "frases"}.</p>` : ""}
-      ${due.length ? `<p>${due.length} ${due.length === 1 ? "frase" : "frases"} para hoy.</p><button class="btn big green" id="r-go">Empezar repaso ▶</button>`
-        : `<p>Nada para hoy. ${Object.keys(state.srs).length ? "Vuelve mañana." : "Finish a lesson and its phrases show up here."}</p>`}
-      <p class="note">${Object.keys(state.srs).length} frases en total.</p>
+    const list = all.filter((c) => c.pile === deckView);
+    body = `<div class="box"><p class="h">${PILES[deckView][0]} · ${PILES[deckView][1]}</p>
+      ${list.length ? list.map((c) => `<div class="line">
+        <div class="es">${esc(c.es)}</div>
+        <div class="tools">
+          <button class="btn white" data-csay="${esc(c.es)}" aria-label="Escuchar · Listen">♪</button>
+          <button class="btn red" data-cdel="${esc(c.es)}" aria-label="Borrar · Delete">✕</button>
+        </div>
+        <div class="en">${esc(c.cue ? `→ reply to: ${c.cue}` : c.en)}</div>
+      </div>`).join("") : `<p class="note">Nada aquí todavía.</p>`}
     </div>`;
   }
-  html += savedHTML();
-  el.innerHTML = html;
 
-  const go = $("#r-go");
-  if (go) go.onclick = () => { rev = { queue: shuffle(dueCards().map((c) => c.es)), done: 0, shown: false }; renderReview(); };
-  if (rev && rev.queue.length) {
-    const c = state.srs[rev.queue[0]];
-    const show = $("#r-show");
-    if (show) show.onclick = () => { rev.shown = true; say(c.es); renderReview(); };
-    const mic = $("#r-mic");
-    if (mic) mic.onclick = () => {
-      mic.textContent = "Escuchando…";
-      mic.classList.add("on");
-      listen((alts, err) => {
-        if (err) { rev.heard = micError(err); rev.cls = "bad"; renderReview(); return; }
-        const [cls, msg] = verdict(match(alts, c.es));
-        Object.assign(rev, { shown: true, heard: `${msg} Oí: “${alts[0]}”`, cls });
-        blip(cls === "good");
-        say(c.es);
-        renderReview();
-      });
-    };
-    const recBtn = $("#r-rec");
-    if (recBtn) recBtn.onclick = () => recordCompare(recBtn, c.es, el.querySelector(".heard"));
-    const sayBtn = $("#r-say");
-    if (sayBtn) sayBtn.onclick = () => { hush(); say(c.es); };
-    const grade = (known) => {
-      hush();
-      const key = rev.queue.shift();
-      if (known) {
-        c.box = Math.min(c.box + 1, GAPS.length - 1);
-        c.due = addDays(GAPS[c.box]);
-        rev.done++;
-      } else {
-        c.box = 0;
-        c.due = today();
-        rev.queue.push(key); // ask again before the session ends
-      }
-      Object.assign(rev, { shown: false, heard: "", cls: "" });
-      if (!rev.queue.length) { registerDone(); celebrate("¡Repaso terminado!"); }
-      save();
-      renderReview();
-    };
-    const yes = $("#r-yes"), no = $("#r-no");
-    if (yes) yes.onclick = () => grade(true);
-    if (no) no.onclick = () => grade(false);
-  }
-  el.querySelectorAll("[data-ssay]").forEach((b) => { b.onclick = () => { hush(); say(state.saved[+b.dataset.ssay].es); }; });
-  el.querySelectorAll("[data-del]").forEach((b) => { b.onclick = () => { state.saved.splice(+b.dataset.del, 1); save(); renderReview(); }; });
-}
-function savedHTML() {
-  if (!state.saved.length) return "";
-  return `<div class="box"><p class="h">Guardado ★ ${state.saved.length}</p><p class="sub">Lines you starred in Guion. They're in Repaso too.</p>` + state.saved.map((l, i) => `
-    <div class="line">
-      ${who(l.sp)}
-      <div class="es">${esc(l.es)}</div>
-      <div class="tools">
-        <button class="btn white" data-ssay="${i}" aria-label="Escuchar · Listen">♪</button>
-        <button class="btn red" data-del="${i}" aria-label="Quitar · Remove">✕</button>
-      </div>
-      <div class="en">${esc(l.en)}</div>
-    </div>`).join("") + `</div>`;
-}
-
-/* ================= Guion: the script, a few minutes a day ================= */
-function renderScript() {
-  const el = $("#script");
-  const days = buildDays(state.lines, state.perDay);
-  const n = currentDay(days);
-  const intro = `<p class="sub">${state.source === "demo"
-    ? "Demo scenes. Import your own movie script and translation in Ajustes: it stays on this phone."
-    : "Your script, a few minutes a day."}</p>`;
-
-  if (!days.length) {
-    el.innerHTML = `<div class="box empty"><p class="h">Sin guion</p><p>No script yet. Import one in Ajustes.</p></div>`;
-    return;
-  }
-  if (n >= days.length) {
-    el.innerHTML = `<div class="box done-card">
-      <p class="h">¡Fin!</p><p>You finished the whole script. ${days.length} days. ¡Increíble!</p>
-      <button class="btn green" id="again-s">Empezar otra vez</button></div>`;
-    $("#again-s").onclick = () => { state.pos = 0; save(); renderScript(); };
-    return;
-  }
-
-  const day = days[n];
-  let html = `<div class="box">
-    <p class="h">Guion · Día ${n + 1} / ${days.length}</p>${intro}
-    <div class="progress"><i style="width:${Math.round((n / days.length) * 100)}%"></i></div>
-    <div class="row">
-      <button class="btn small ${state.hideEn ? "on" : ""}" id="hide-s">${state.hideEn ? "Inglés: oculto" : "Inglés: visible"}</button>
-      <button class="btn small green" id="play-s">▶ Todo</button>
+  el.innerHTML = `<div class="chips"><button class="chip ${deckView === "swipe" ? "on" : ""}" data-view="swipe">Practicar</button>${chips}</div>
+    ${body}
+    <div class="box">
+      <p class="h">+ Añadir tarjeta</p>
+      <p class="sub">A word or sentence you want to learn. Tip: whole sentences stick better than single words.</p>
+      <input type="text" id="n-es" placeholder="Español · ej: ¿Dónde está la playa?">
+      <input type="text" id="n-en" placeholder="English · ex: Where is the beach?" style="margin-top:8px">
+      <button class="btn green small" id="n-add" style="margin-top:10px">Añadir</button>
     </div>`;
-  let i = 0;
-  day.items.forEach((l) => {
-    if (l.scene) { html += `<p class="scene-title">${esc(l.scene)}</p>`; return; }
-    const saved = state.saved.some((s) => s.es === l.es && s.en === l.en);
-    html += `<div class="line">
-      ${who(l.sp)}
-      <div class="es">${esc(l.es)}</div>
-      <div class="tools">
-        <button class="btn white" data-say="${i}" aria-label="Escuchar · Listen">♪</button>
-        <button class="btn ${saved ? "on" : "white"}" data-save="${i}" aria-label="Guardar · Save">★</button>
-      </div>
-      <div class="en ${state.hideEn ? "covered" : ""}" data-reveal>${esc(l.en)}</div>
-    </div>`;
-    i++;
-  });
-  html += `</div><button class="btn big green" id="done-s">¡Hecho! Siguiente ▶</button>`;
-  el.innerHTML = html;
 
-  const lines = day.items.filter((l) => !l.scene);
-  $("#hide-s").onclick = () => { state.hideEn = !state.hideEn; save(); renderScript(); };
-  el.querySelectorAll("[data-reveal]").forEach((x) => { x.onclick = () => x.classList.remove("covered"); });
-  el.querySelectorAll("[data-say]").forEach((b) => { b.onclick = () => { hush(); say(lines[+b.dataset.say].es); }; });
-  el.querySelectorAll("[data-save]").forEach((b) => {
-    b.onclick = () => {
-      const l = lines[+b.dataset.save];
-      const at = state.saved.findIndex((s) => s.es === l.es && s.en === l.en);
-      if (at >= 0) state.saved.splice(at, 1);
-      else {
-        state.saved.unshift({ sp: l.sp, en: l.en, es: l.es });
-        addCard({ es: l.es, en: l.en }, 1);
-      }
-      save();
-      b.classList.toggle("on", at < 0);
-      b.classList.toggle("white", at >= 0);
-    };
-  });
-  wirePlayAll(el, $("#play-s"), lines);
-  $("#done-s").onclick = () => {
-    const following = days[n + 1];
-    state.pos = following ? following.start : state.lines.length;
-    registerDone();
+  el.querySelectorAll("[data-view]").forEach((b) => { b.onclick = () => { deckView = b.dataset.view; renderCards(); }; });
+  el.querySelectorAll("[data-csay]").forEach((b) => { b.onclick = () => { hush(); say(b.dataset.csay); }; });
+  el.querySelectorAll("[data-cdel]").forEach((b) => { b.onclick = () => { delete state.deck[b.dataset.cdel]; save(); renderCards(); }; });
+  $("#n-add").onclick = () => {
+    const es = $("#n-es").value.trim(), en = $("#n-en").value.trim();
+    if (!es) { toast("Escribe algo en español · Type the Spanish"); return; }
+    if (!addCard({ es, en, src: "mine" }, "new")) { toast("Ya la tienes · Already in your cards"); return; }
     save();
-    renderStreak();
-    celebrate();
-    renderScript();
+    toast("¡Añadida! · Added");
+    renderCards();
+  };
+  const go = $("#d-go"), allBtn = $("#d-all");
+  const start = (cards) => { deckRun = { queue: cards.slice(0, 20).map((c) => c.es), flipped: false, done: 0 }; renderCards(); };
+  if (go) go.onclick = () => start(todaysCards());
+  if (allBtn) allBtn.onclick = () => start(shuffle(Object.values(state.deck)));
+  const rev = $("#d-rev");
+  if (rev) rev.onclick = () => { state.reverse = !state.reverse; save(); renderCards(); };
+  if (deckRun && deckRun.queue.length && deckView === "swipe") wireSwipe();
+}
+
+function grade(pile) {
+  const key = deckRun.queue.shift();
+  const c = state.deck[key];
+  if (pile === "know") {
+    c.box = Math.min((c.box || 0) + 1, GAPS.length - 1);
+    c.due = addDays(GAPS[c.box]);
+  } else if (pile === "learn") {
+    c.box = 1;
+    c.due = addDays(1);
+  } else {
+    c.box = 0;
+    c.due = today();
+    deckRun.queue.splice(Math.min(3, deckRun.queue.length), 0, key); // see it again in a few cards
+  }
+  c.pile = pile;
+  deckRun.flipped = false;
+  deckRun.done++;
+  state.swipes = (state.swipes || 0) + 1;
+  if (state.swipes % 10 === 0) award(1, "10 tarjetas");
+  blip(pile !== "nose");
+  if (!deckRun.queue.length) { registerDone(); celebrate("¡Listo!"); }
+  save();
+  renderCards();
+}
+
+function wireSwipe() {
+  const card = $("#flash");
+  const c = state.deck[deckRun.queue[0]];
+  let x0 = 0, y0 = 0, dx = 0, dy = 0, dragging = false, moved = false;
+  const pile = () => (dx > 80 ? "know" : dx < -80 ? "nose" : dy < -80 ? "learn" : null);
+  card.onpointerdown = (e) => { dragging = true; moved = false; x0 = e.clientX; y0 = e.clientY; dx = dy = 0; card.setPointerCapture(e.pointerId); card.style.transition = "none"; };
+  card.onpointermove = (e) => {
+    if (!dragging) return;
+    dx = e.clientX - x0; dy = e.clientY - y0;
+    if (Math.abs(dx) + Math.abs(dy) > 8) moved = true;
+    card.style.transform = `translate(${dx}px, ${Math.min(dy, 20)}px) rotate(${dx / 18}deg)`;
+    const p = pile();
+    card.dataset.hint = p || "";
+  };
+  card.onpointerup = () => {
+    if (!dragging) return;
+    dragging = false;
+    card.style.transition = "";
+    const p = pile();
+    if (p) {
+      card.style.transform = `translate(${p === "know" ? 500 : p === "nose" ? -500 : 0}px, ${p === "learn" ? -600 : 0}px) rotate(${dx / 10}deg)`;
+      setTimeout(() => grade(p), 180);
+    } else {
+      card.style.transform = "";
+      card.dataset.hint = "";
+      if (!moved) { deckRun.flipped = !deckRun.flipped; if (deckRun.flipped) say(c.es); renderCards(); }
+    }
+  };
+  $("#s-no").onclick = () => grade("nose");
+  $("#s-learn").onclick = () => grade("learn");
+  $("#s-yes").onclick = () => grade("know");
+  $("#s-say").onclick = () => { hush(); say(c.es); };
+  $("#s-stop").onclick = () => { deckRun = null; renderCards(); };
+  const mic = $("#s-mic");
+  if (mic) mic.onclick = () => {
+    mic.classList.add("on");
+    const out = $("#s-heard");
+    out.className = "heard";
+    out.textContent = "Escuchando…";
+    listen((alts, err) => {
+      mic.classList.remove("on");
+      if (err) { out.className = "heard bad"; out.textContent = micError(err); return; }
+      const [cls, msg] = verdict(match(alts, c.es));
+      out.className = `heard ${cls}`;
+      out.textContent = `${msg} Oí: “${alts[0]}”`;
+      blip(cls === "good");
+      if (!deckRun.flipped) { deckRun.flipped = true; card.querySelector(".back").classList.remove("hidden"); }
+    });
   };
 }
 
-function renderSettings() {
-  $("#perday").value = String(state.perDay);
-  if (!$("#perday").value) $("#perday").value = "30";
-  $("#timer").value = String(state.timer);
-  $("#sound").textContent = `Música: ${state.sound ? "sí" : "no"}`;
-  $("#sound").classList.toggle("on", state.sound);
-  $("#slow").textContent = `Voz lenta: ${state.slow ? "sí" : "no"}`;
-  $("#slow").classList.toggle("on", state.slow);
-  $("#audio-only").textContent = `Solo audio: ${state.audioOnly ? "sí" : "no"}`;
-  $("#audio-only").classList.toggle("on", state.audioOnly);
-  const standalone = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
-  $("#mic-info").textContent = Recognition
-    ? "The microphone checks your answers. The first time, allow microphone access. Tap Probar micrófono and say “hola”."
-    : `This ${standalone ? "home-screen app" : "browser"} can't understand speech, so you'll tap answers and use ● Grabar to record yourself.`
-      + (isIOS && standalone ? " On iPhone, opening the link in Safari instead may allow it." : " Chrome or Safari can usually listen.");
-  const count = state.lines.filter((l) => !l.scene).length;
-  $("#source").textContent = state.source === "demo" ? `demo scenes (${count} lines)` : `your import (${count} lines)`;
-  const v = spanishVoice();
-  $("#voice-info").textContent = v ? `Voz: ${v.name} (${v.lang})` :
-    ("speechSynthesis" in window ? "No Spanish voice found yet. On iPhone: Settings → Accessibility → Spoken Content → Voices → Spanish." : "This browser can't read aloud.");
+/* ================= Historias: short reads with tappable hard words ================= */
+let storyIdx = null;
+function pickStory() {
+  const unread = STORIES.map((_, i) => i).filter((i) => !state.read.includes(i) && i !== storyIdx);
+  const pool = unread.length ? unread : STORIES.map((_, i) => i).filter((i) => i !== storyIdx);
+  storyIdx = pool[Math.floor(Math.random() * pool.length)];
+}
+// Turns "{palabra|meaning}" into a tappable word; known words lose the underline.
+function markup(text) {
+  return esc(text).replace(/\{([^|}]+)\|([^}]+)\}/g, (_, w, t) =>
+    `<span class="hw ${state.known.includes(w) ? "known" : ""}" data-w="${w}" data-t="${t}">${w}</span>`);
+}
+const plain = (text) => text.replace(/\{([^|}]+)\|[^}]+\}/g, "$1");
+
+function renderStories() {
+  const el = $("#stories");
+  if (storyIdx === null) pickStory();
+  const s = STORIES[storyIdx];
+  const lines = s.lines.map(([sp, es, en]) => ({ sp, es: plain(es), raw: es, en }));
+  const isRead = state.read.includes(storyIdx);
+  el.innerHTML = `<div class="box">
+    <div class="day-head"><p class="h">Historias</p><span class="note">${state.read.length} / ${STORIES.length} leídas</span></div>
+    <p class="sub">Just read. Tap an <span class="hw">underlined word</span> to see it, then keep it or mark that you know it.</p>
+    <div class="row">
+      <button class="btn small ${state.hardStories ? "on" : ""}" id="hard">${state.hardStories ? "Modo difícil: sin inglés" : "Modo fácil: con inglés"}</button>
+      <button class="btn small green" id="play-st">▶ Todo</button>
+    </div>
+  </div>
+  <div class="box story">
+    <p class="lesson-title">${esc(s.title)}</p>
+    ${state.hardStories ? "" : `<p class="sub">${esc(s.en)}</p>`}
+    ${lines.map((l, i) => `<div class="line ${l.sp ? "" : "narration"}">
+      ${who(l.sp)}
+      <div class="es">${markup(l.raw)}</div>
+      <div class="tools"><button class="btn white" data-say="${i}" aria-label="Escuchar · Listen">♪</button></div>
+      ${state.hardStories ? "" : `<div class="en">${esc(l.en)}</div>`}
+    </div>`).join("")}
+  </div>
+  <div class="row">
+    <button class="btn green big" id="st-done" style="flex:2">${isRead ? "Otra historia ▶" : "Terminé ✓ +1 papa"}</button>
+  </div>
+  ${isRead ? "" : `<button class="btn white small" id="st-skip" style="margin-top:12px">Saltar · Skip</button>`}`;
+
+  $("#hard").onclick = () => { state.hardStories = !state.hardStories; save(); renderStories(); };
+  el.querySelectorAll("[data-say]").forEach((b) => { b.onclick = () => { hush(); say(lines[+b.dataset.say].es); }; });
+  wirePlayAll(el.querySelector(".story"), $("#play-st"), lines);
+  el.querySelectorAll(".hw[data-w]").forEach((w) => { w.onclick = () => openWord(w.dataset.w, w.dataset.t); });
+  $("#st-done").onclick = () => {
+    hush();
+    if (!isRead) {
+      state.read.push(storyIdx);
+      award(1, "historia leída");
+      registerDone();
+      miniBeto.dance(1800);
+    }
+    pickStory();
+    save();
+    renderStories();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const skip = $("#st-skip");
+  if (skip) skip.onclick = () => { hush(); pickStory(); renderStories(); };
 }
 
-/* ================= Mis lecciones: lessons he writes himself ================= */
-// Deadpan reactions Beto (or Lalo) uses to turn a list of phrases into a conversation.
+function openWord(w, t) {
+  const sheet = $("#word");
+  const inDeck = !!state.deck[w];
+  sheet.innerHTML = `<div class="box">
+    <div class="day-head"><p class="lesson-title">${esc(w)}</p><button class="btn white small" id="w-x">✕</button></div>
+    <p class="en">${esc(t)}</p>
+    <div class="row">
+      <button class="btn white small" id="w-say">♪</button>
+      <button class="btn green small" id="w-know">✓ Ya la sé</button>
+      <button class="btn small" id="w-add" ${inDeck ? "disabled" : ""}>${inDeck ? "En mis tarjetas" : "+ Mis tarjetas"}</button>
+    </div>
+  </div>`;
+  sheet.classList.remove("hidden");
+  say(w);
+  const close = () => sheet.classList.add("hidden");
+  $("#w-x").onclick = close;
+  $("#w-say").onclick = () => { hush(); say(w); };
+  $("#w-know").onclick = () => {
+    if (!state.known.includes(w)) state.known.push(w);
+    save(); close(); renderStories();
+  };
+  $("#w-add").onclick = () => {
+    addCard({ es: w, en: t, src: "story" }, "learn");
+    save(); close(); toast("En Tarjetas · Added to your cards");
+  };
+}
+
+/* ================= Mis lecciones: make your own, step by step ================= */
 const REACT = {
   charla: [
     ["Interesante.", "Interesting."], ["¿En serio?", "Really?"], ["Eso dice mi abuela también.", "My grandma says that too."],
@@ -1742,15 +2160,6 @@ const REACT = {
     ["Da igual. Gané.", "Doesn't matter. I won."], ["¡Ya basta!", "Enough!"],
   ],
 };
-
-// One phrase per line: "Spanish = English". The English part is optional.
-function parsePhrases(text) {
-  return text.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).map((l) => {
-    const [es, ...rest] = l.split(/\s*[=|]\s*|\t/);
-    return [es.trim(), rest.join(" ").trim()];
-  }).filter(([es]) => es);
-}
-
 function buildCustom(c) {
   const phrases = c.phrases;
   const react = shuffle(REACT[c.kind]);
@@ -1774,43 +2183,28 @@ function buildCustom(c) {
   };
 }
 
-let editing = false;
+let draft = null; // { title, kind, rows: [[es, en]] } while making a lesson
 function renderMine() {
   const el = $("#mine");
   el.classList.toggle("hidden", !!run);
   if (run) return;
-  const list = state.custom.map((c, i) => `<div class="line">
+  if (draft) { renderDraft(el); return; }
+  el.innerHTML = `<div class="box">
+    <p class="h">Mis lecciones</p>
+    <p class="sub">Heard something today? Turn it into your own lesson in 1 minute. Beto makes the conversation.</p>
+    ${state.custom.map((c, i) => `<div class="line">
       <div class="es">${esc(c.title)}</div>
       <div class="tools">
         <button class="btn green" data-play="${i}" aria-label="Practicar · Practice">▶</button>
         <button class="btn red" data-cdel="${i}" aria-label="Borrar · Delete">✕</button>
       </div>
       <div class="en">${c.phrases.length} frases · ${c.kind === "pleito" ? "pleito" : "charla"}</div>
-    </div>`).join("");
-  el.innerHTML = `<div class="box">
-    <p class="h">Mis lecciones</p>
-    <p class="sub">Heard something new? Type it in and Beto turns it into a lesson: phrases, a scene and a live round.</p>
-    ${list}
-    ${editing ? `
-      <p class="note" style="margin-top:12px">Title · Título</p>
-      <input type="text" id="c-title" placeholder="Ej: En el súper" style="width:100%">
-      <p class="note">One phrase per line, Spanish = English (the English is optional):</p>
-      <textarea id="c-phrases" placeholder="¿Dónde está el baño? = Where is the bathroom?
-Quiero un café. = I want a coffee.
-¿Cuánto cuesta? = How much is it?"></textarea>
-      <p class="note">Style · Estilo</p>
-      <select id="c-kind"><option value="charla">Charla · friendly conversation</option><option value="pleito">Pleito · Beto argues with everything</option></select>
-      <div class="row" style="margin-top:10px">
-        <button class="btn green small" id="c-save">Crear lección</button>
-        <button class="btn white small" id="c-cancel">Cancelar</button>
-      </div>`
-    : `<button class="btn small" id="c-new" style="margin-top:10px">+ Nueva lección</button>`}
+    </div>`).join("")}
+    <button class="btn big" id="c-new" style="margin-top:10px">+ Crear mi lección</button>
   </div>`;
-
   el.querySelectorAll("[data-play]").forEach((b) => {
     b.onclick = () => {
-      const L = buildCustom(state.custom[+b.dataset.play]);
-      run = { L, n: -1, step: 0, turn: 0, score: 0, missed: [] };
+      run = { L: buildCustom(state.custom[+b.dataset.play]), n: -1, step: 0, turn: 0, score: 0, missed: [] };
       window.scrollTo({ top: 0 });
       renderLessons();
     };
@@ -1823,101 +2217,104 @@ Quiero un café. = I want a coffee.
       renderMine();
     };
   });
-  const nw = $("#c-new");
-  if (nw) nw.onclick = () => { editing = true; renderMine(); $("#c-title").focus(); };
-  const cancel = $("#c-cancel");
-  if (cancel) cancel.onclick = () => { editing = false; renderMine(); };
-  const saveBtn = $("#c-save");
-  if (saveBtn) saveBtn.onclick = () => {
-    const phrases = parsePhrases($("#c-phrases").value);
-    if (phrases.length < 3) { toast("Escribe al menos 3 frases · Add at least 3 phrases"); return; }
-    const title = $("#c-title").value.trim() || `Mi lección ${state.custom.length + 1}`;
-    state.custom.unshift({ title, kind: $("#c-kind").value, phrases });
-    editing = false;
+  $("#c-new").onclick = () => { draft = { title: "", kind: "charla", rows: [["", ""], ["", ""], ["", ""]] }; renderMine(); };
+}
+function renderDraft(el) {
+  const filled = draft.rows.filter(([es]) => es.trim()).length;
+  el.innerHTML = `<div class="box">
+    <p class="h">Crear mi lección</p>
+    <p class="step-label">1 · Ponle nombre <span>Name it</span></p>
+    <input type="text" id="d-title" value="${esc(draft.title)}" placeholder="Ej: En el súper">
+    <p class="step-label">2 · Escribe tus frases <span>Your phrases: Spanish, and English if you know it</span></p>
+    ${draft.rows.map(([es, en], i) => `<div class="phrase-row">
+      <span class="num">${i + 1}</span>
+      <div>
+        <input type="text" data-es="${i}" value="${esc(es)}" placeholder="${i === 0 ? "¿Dónde está el baño?" : i === 1 ? "Quiero un café." : "¿Cuánto cuesta?"}">
+        <input type="text" data-en="${i}" value="${esc(en)}" placeholder="${i === 0 ? "Where is the bathroom?" : i === 1 ? "I want a coffee." : "How much is it?"}">
+      </div>
+    </div>`).join("")}
+    <button class="btn white small" id="d-more">+ Otra frase</button>
+    <p class="step-label">3 · ¿Cómo es Beto hoy? <span>Pick a style</span></p>
+    <div class="row">
+      <button class="btn ${draft.kind === "charla" ? "on" : "white"}" data-kind="charla">Amable<br><small>friendly chat</small></button>
+      <button class="btn ${draft.kind === "pleito" ? "on" : "white"}" data-kind="pleito">Pleito<br><small>he argues with everything</small></button>
+    </div>
+    <p class="note">${filled < 3 ? `Write at least 3 phrases (${filled}/3).` : "¡Listo! Tap Crear."}</p>
+    <div class="row">
+      <button class="btn green" id="d-save" ${filled < 3 ? "disabled" : ""}>Crear lección ✓</button>
+      <button class="btn white small" id="d-cancel">Cancelar</button>
+    </div>
+  </div>`;
+  const sync = () => {
+    draft.title = $("#d-title").value;
+    el.querySelectorAll("[data-es]").forEach((x) => { draft.rows[+x.dataset.es][0] = x.value; });
+    el.querySelectorAll("[data-en]").forEach((x) => { draft.rows[+x.dataset.en][1] = x.value; });
+    const n = draft.rows.filter(([es]) => es.trim()).length;
+    $("#d-save").disabled = n < 3;
+    el.querySelector(".note").textContent = n < 3 ? `Write at least 3 phrases (${n}/3).` : "¡Listo! Tap Crear.";
+  };
+  el.querySelectorAll("input").forEach((x) => { x.oninput = sync; });
+  $("#d-more").onclick = () => { sync(); draft.rows.push(["", ""]); renderDraft(el); el.querySelector(`[data-es="${draft.rows.length - 1}"]`).focus(); };
+  el.querySelectorAll("[data-kind]").forEach((b) => { b.onclick = () => { sync(); draft.kind = b.dataset.kind; renderDraft(el); }; });
+  $("#d-cancel").onclick = () => { draft = null; renderMine(); };
+  $("#d-save").onclick = () => {
+    sync();
+    const phrases = draft.rows.map(([es, en]) => [es.trim(), en.trim()]).filter(([es]) => es);
+    if (phrases.length < 3) return;
+    state.custom.unshift({ title: draft.title.trim() || `Mi lección ${state.custom.length + 1}`, kind: draft.kind, phrases });
+    phrases.forEach(([es, en]) => addCard({ es, en, src: "mine" }, "new"));
+    draft = null;
     save();
     renderMine();
-    toast("¡Lección creada! · Lesson created");
+    toast("¡Lección creada! Tap ▶ to practice.");
   };
 }
-/* ================= Import ================= */
-function parseTable(text) {
-  text = text.replace(/^﻿/, "");
-  const first = text.split(/\r?\n/).find((l) => l.trim()) || "";
-  const count = (ch) => first.split(ch).length - 1;
-  const delim = count("\t") > 0 ? "\t" : count(";") > count(",") ? ";" : ",";
-  const rows = [];
-  let row = [], cell = "", quoted = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (quoted) {
-      if (c === '"' && text[i + 1] === '"') { cell += '"'; i++; }
-      else if (c === '"') quoted = false;
-      else cell += c;
-    } else if (c === '"' && cell === "") quoted = true;
-    else if (c === delim) { row.push(cell); cell = ""; }
-    else if (c === "\n" || c === "\r") {
-      if (c === "\r" && text[i + 1] === "\n") i++;
-      row.push(cell); rows.push(row); row = []; cell = "";
-    } else cell += c;
-  }
-  row.push(cell); rows.push(row);
-  return rows.map((r) => r.map((c) => c.trim())).filter((r) => r.some((c) => c));
+
+/* ================= The story so far (first launch) ================= */
+const INTRO = [
+  ["potato", "Tuber Falls, Idaho.", "Población: 412. Papas: muchas más."],
+  ["tú", "Este eres tú. Un gringo.", "Your dream: move somewhere warm where they speak Spanish. Your Spanish: “taco.”"],
+  ["abuela", "Abuela Chela.", "Potato farmer. The only Spanish speaker in town. 40,000 potatoes. Nobody to talk to."],
+  ["beto", "Beto, su nieto.", "Your teacher. Sixteen. Very confident. Often wrong."],
+  ["potato", "El trato · The deal", "You learn Spanish. Abuela pays you in potatoes. 100 potatoes = a bus ticket south."],
+  ["beto", "Beto dice que el chofer acepta papas.", "He does not."],
+];
+function showIntro(k = 0) {
+  const box = $("#intro");
+  const [face, es, en] = INTRO[k];
+  const img = face === "potato" ? `<img class="spud" src="${potatoURL()}" alt="" width="90" height="63">` : bigFace(face);
+  box.innerHTML = `<div class="intro-card">
+    <div class="intro-pic">${img}</div>
+    <p class="intro-es">${esc(es)}</p>
+    <p class="intro-en">${esc(en)}</p>
+    <div class="dots">${INTRO.map((_, i) => `<i class="${i === k ? "on" : ""}"></i>`).join("")}</div>
+    <button class="btn big ${k === INTRO.length - 1 ? "green" : ""}" id="intro-next">${k === INTRO.length - 1 ? "¡A trabajar! ▶" : "Siguiente ▶"}</button>
+    ${k < INTRO.length - 1 ? `<button class="press-skip" id="intro-skip">Saltar · Skip</button>` : ""}
+  </div>`;
+  box.classList.remove("hidden");
+  const done = () => { box.classList.add("hidden"); state.seenStory = true; save(); };
+  $("#intro-next").onclick = () => { blip(true); if (k === INTRO.length - 1) done(); else showIntro(k + 1); };
+  const skip = $("#intro-skip");
+  if (skip) skip.onclick = done;
 }
 
-function toLines(rows) {
-  if (!rows.length) return [];
-  let col = null;
-  const head = rows[0].map((c) => c.toLowerCase());
-  const find = (...names) => head.findIndex((h) => names.some((n) => h.startsWith(n)));
-  const en = find("english", "inglés", "ingles", "en");
-  const es = find("spanish", "español", "espanol", "es");
-  if (en >= 0 && es >= 0 && en !== es) {
-    col = { sp: find("speaker", "personaje", "who", "quién", "quien", "character"), en, es };
-    rows = rows.slice(1);
-  }
-  const out = [];
-  rows.forEach((r) => {
-    if (r[0].startsWith("#")) { out.push({ scene: r.join(" ").replace(/^#+\s*/, "").trim() }); return; }
-    let l;
-    if (col) l = { sp: col.sp >= 0 ? r[col.sp] || "" : "", en: r[col.en] || "", es: r[col.es] || "" };
-    else if (r.length >= 3) l = { sp: r[0], en: r[1], es: r[2] };
-    else if (r.length === 2) l = { sp: "", en: r[0], es: r[1] };
-    else return;
-    if (l.en || l.es) out.push(l);
-  });
-  return out;
+function renderSettings() {
+  $("#timer").value = String(state.timer);
+  $("#sound").textContent = `Música: ${state.sound ? "sí" : "no"}`;
+  $("#sound").classList.toggle("on", state.sound);
+  $("#slow").textContent = `Voz lenta: ${state.slow ? "sí" : "no"}`;
+  $("#slow").classList.toggle("on", state.slow);
+  $("#audio-only").textContent = `Solo audio: ${state.audioOnly ? "sí" : "no"}`;
+  $("#audio-only").classList.toggle("on", state.audioOnly);
+  const standalone = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+  $("#mic-info").textContent = Recognition
+    ? "The microphone checks your answers. The first time, allow microphone access. Tap Probar micrófono and say “hola”."
+    : `This ${standalone ? "home-screen app" : "browser"} can't understand speech, so you'll tap answers and use ● Grabar to record yourself.`
+      + (isIOS && standalone ? " On iPhone, opening the link in Safari instead may allow it." : " Chrome or Safari can usually listen.");
+  const v = spanishVoice();
+  $("#voice-info").textContent = v ? `Voz: ${v.name} (${v.lang})` :
+    ("speechSynthesis" in window ? "No Spanish voice found yet. On iPhone: Settings → Accessibility → Spoken Content → Voices → Spanish." : "This browser can't read aloud.");
 }
-
-$("#file").onchange = async (e) => {
-  const f = e.target.files[0];
-  if (!f) return;
-  $("#paste").value = await f.text();
-  $("#import-info").textContent = `${f.name} cargado. Tap Importar.`;
-};
-
-$("#import").onclick = () => {
-  const lines = toLines(parseTable($("#paste").value));
-  const count = lines.filter((l) => !l.scene).length;
-  if (!count) { toast("No encontré líneas · No lines found. Check the format above."); return; }
-  const perDay = state.source === "demo" ? 30 : state.perDay;
-  const days = buildDays(lines, perDay).length;
-  if (!confirm(`${count} lines → ${days} ${days === 1 ? "day" : "days"} at ${perDay} lines a day.\nReplace the current script and start at day 1?`)) return;
-  Object.assign(state, { lines, source: "import", perDay, pos: 0 });
-  save();
-  $("#paste").value = "";
-  $("#file").value = "";
-  $("#import-info").textContent = "";
-  renderAll();
-  showTab("script");
-  toast("¡Importado! · Imported");
-};
-
-$("#perday").onchange = (e) => {
-  // Keep his place: stay on the day that contains the line he's at.
-  state.perDay = +e.target.value;
-  save();
-  renderAll();
-};
 
 $("#sound").onclick = () => { state.sound = !state.sound; save(); renderSettings(); };
 $("#slow").onclick = () => { state.slow = !state.slow; save(); renderSettings(); };
@@ -1934,12 +2331,13 @@ $("#test-mic").onclick = () => {
     info.textContent = err ? micError(err) : `✓ Funciona. Oí: “${alts[0]}”`;
   });
 };
+$("#replay-story").onclick = () => showIntro(0);
 
 $("#export").onclick = () => {
   const blob = new Blob([JSON.stringify(state)], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `pixel-espanol-backup-${today()}.json`;
+  a.download = `pixelito-backup-${today()}.json`;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 };
@@ -1948,29 +2346,20 @@ $("#restore").onchange = async (e) => {
   if (!f) return;
   try {
     const s = JSON.parse(await f.text());
-    if (!s || !Array.isArray(s.lines)) throw new Error("bad file");
+    if (!s || !s.deck) throw new Error("bad file");
     state = Object.assign(fresh(), s);
     save();
     renderAll();
     toast("¡Restaurado! · Restored");
   } catch (err) {
-    toast("Archivo no válido · That isn't a backup file");
+    toast("Archivo no válido · That isn't a Pixelito backup");
   }
   e.target.value = "";
 };
-$("#restart").onclick = () => {
-  if (!confirm("Go back to day 1 of the script? Lessons, saved lines and the streak stay.")) return;
-  state.pos = 0;
-  save();
-  renderAll();
-  showTab("script");
-};
-$("#demo").onclick = () => {
-  if (!confirm("Load the demo scenes? This replaces the current script and progress.")) return;
-  Object.assign(state, { lines: DEMO, source: "demo", perDay: 10, pos: 0 });
-  save();
-  renderAll();
-  showTab("script");
+$("#reset").onclick = () => {
+  if (!confirm("Erase everything on this phone (potatoes, cards, lessons) and start over?")) return;
+  try { localStorage.removeItem(KEY); localStorage.removeItem(OLD_KEY); } catch (e) { /* storage unavailable */ }
+  location.reload();
 };
 
 /* ================= Shell ================= */
@@ -1987,13 +2376,15 @@ function showTab(name) {
   document.querySelectorAll("main section").forEach((s) => s.classList.toggle("active", s.id === name));
   stopTimer();
   if (recognizer) try { recognizer.abort(); } catch (e) { /* already stopped */ }
+  $("#word").classList.add("hidden");
   if (name === "today") renderLessons();
-  if (name === "script") renderScript();
-  if (name === "review") renderReview();
+  if (name === "stories") renderStories();
+  if (name === "cards") renderCards();
   if (name === "settings") renderSettings();
+  window.scrollTo({ top: 0 });
 }
 document.querySelectorAll("nav .btn").forEach((b) => { b.onclick = () => { hush(); showTab(b.dataset.tab); }; });
-function renderAll() { renderLessons(); renderScript(); renderReview(); renderSettings(); }
+function renderAll() { renderLessons(); renderStories(); renderCards(); renderSettings(); }
 
 // Title screen: Beto dances on open, says "¡Bienvenido!" when you press start.
 const sceneCtx = $("#scene").getContext("2d");
@@ -2010,7 +2401,7 @@ const miniBeto = animator((frame, hop) => {
 $("#cast").innerHTML = Object.values(CAST).map((c) =>
   `<figure><img src="${pixelURL("face-" + c.name, outline(c.face))}" alt="">${esc(c.name)}<small>${esc(c.role)}</small></figure>`).join("");
 
-const HOLAS = ["¡Hola!", "¡Vamos!", "¡Qué onda!", "¡Tú puedes!", "¡Bienvenido!"];
+const HOLAS = ["¡Hola!", "¡Vamos!", "¡Qué onda!", "¡Tú puedes!", "¡Bienvenido!", "Papas.", "¿Acepta papas?"];
 $("#mini").onclick = () => { miniBeto.dance(2000); hush(); say(HOLAS[Math.floor(Math.random() * HOLAS.length)]); };
 
 let started = false;
@@ -2025,11 +2416,13 @@ $("#start").onclick = () => {
   setTimeout(() => {
     $("#title").classList.add("fade");
     setTimeout(() => $("#title").classList.add("hidden"), 450);
+    if (!state.seenStory) showIntro(0);
   }, 2600);
 };
 
 loadVoices();
 if ("speechSynthesis" in window) speechSynthesis.onvoiceschanged = () => { loadVoices(); renderSettings(); };
+save();
 renderAll();
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {

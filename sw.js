@@ -1,6 +1,6 @@
 // Offline support: keeps a copy of the app (and its pixel fonts) on the device.
 // Bump CACHE when shipping changes to non-HTML assets.
-const CACHE = "pixel-es-v3";
+const CACHE = "pixelito-v1";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg", "./icon-192.png", "./icon-512.png"];
 const FONT_HOSTS = ["fonts.googleapis.com", "fonts.gstatic.com"];
 
